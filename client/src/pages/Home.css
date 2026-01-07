@@ -1,0 +1,293 @@
+@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@300;400;500;600;700&display=swap");
+
+/* --- RESET & BASE --- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.home-page {
+  width: 100%;
+  background: #f6f4f1;
+  overflow-x: hidden;
+}
+
+/* --- SECTION 01: HERO --- */
+.hero-section-text {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.hero-title {
+  font-family: "Bebas Neue", sans-serif;
+  font-size: clamp(60px, 14vw, 200px);
+  line-height: 0.85;
+  color: #111;
+  letter-spacing: -3px;
+  margin-bottom: 40px;
+}
+
+.hero-line-wrapper {
+  overflow: hidden;
+}
+
+.text-gold {
+  color: #e3b94d;
+}
+
+.hero-desc {
+  font-family: "Montserrat", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  color: #666;
+  text-transform: uppercase;
+  margin-bottom: 50px;
+}
+
+/* --- BUTTONS --- */
+.hero-book-btn {
+  display: inline-block;
+  position: relative;
+  padding: 18px 38px;
+  border: 1px solid #111;
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 20px;
+  letter-spacing: 3px;
+  color: #111;
+  text-decoration: none;
+  overflow: hidden;
+  background: transparent;
+}
+
+.hero-book-btn span {
+  position: relative;
+  z-index: 2;
+}
+
+.btn-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #e3b94d;
+  z-index: 1;
+  transform: translateY(100%);
+  transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.hero-book-btn:hover .btn-fill {
+  transform: translateY(0);
+}
+
+/* --- SECTION 02: PARALLAX --- */
+.parallax-section {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f6f4f1;
+  position: relative;
+  overflow: hidden;
+}
+
+.parallax-container {
+  width: 100%;
+  max-width: 1400px;
+  height: 90vh;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: 1fr auto;
+  align-items: center;
+  gap: 2vw;
+  padding: 0 5%;
+}
+
+.parallax-img-wrapper img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4/5;
+  object-fit: cover;
+  box-shadow: 0 30px 60px rgba(0,0,0,0.15);
+}
+
+.parallax-img-1 { align-self: start; margin-top: 50px; }
+.parallax-img-2 { align-self: end; margin-bottom: 50px; }
+.parallax-img-3 { align-self: center; }
+.parallax-img-4 { align-self: start; }
+
+.img-caption {
+  font-family: "Montserrat", sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  margin-top: 12px;
+  color: #aaa;
+  text-transform: uppercase;
+}
+
+.parallax-menu-wrap {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+/* --- SECTION 03: PHILOSOPHY (MASKING FIX) --- */
+.philosophy-section {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f6f4f1;
+  padding: 100px 0;
+}
+
+.philosophy-content {
+  max-width: 1000px;
+  text-align: center;
+  padding: 0 40px;
+}
+
+.section-label {
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 22px;
+  letter-spacing: 5px;
+  color: #e3b94d;
+  margin-bottom: 50px;
+}
+
+.reveal-text {
+  font-family: "Montserrat", sans-serif;
+  font-size: clamp(20px, 3.5vw, 38px);
+  line-height: 1.6;
+  font-weight: 500;
+  text-transform: uppercase;
+  color: #d1d1d1; /* Start Grey */
+}
+
+/* NO TRANSITIONS HERE - GSAP HANDLES IT */
+.word-span {
+  display: inline-block;
+  margin-right: 12px;
+  color: #d1d1d1;
+  opacity: 0.2;
+}
+
+/* --- SECTION 04: ACTION NAV --- */
+.nav-expand-section {
+  width: 100%;
+  height: 50vh;
+  position: relative;
+  background: #f6f4f1;
+  overflow: hidden;
+  display: flex;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.nav-wrap {
+  position: absolute;
+  height: 100%;
+  width: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  overflow: hidden;
+  transition: background 0.6s ease;
+}
+
+.nav-wrap-left { left: 0; border-right: 1px solid rgba(0,0,0,0.05); }
+.nav-wrap-right { left: 50%; }
+
+.static-btn {
+  font-family: "Bebas Neue", sans-serif;
+  font-size: clamp(32px, 5vw, 60px);
+  color: #111;
+  text-decoration: none;
+  letter-spacing: 2px;
+  z-index: 20;
+}
+
+.marquee-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.marquee-inner {
+  display: flex;
+  white-space: nowrap;
+}
+
+.marquee-inner span {
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 22vh;
+  color: #111;
+  padding-right: 100px;
+}
+
+/* --- FOOTER --- */
+.main-footer {
+  width: 100%;
+  background: #111;
+  padding: 100px 5% 40px 5%;
+  color: #f6f4f1;
+}
+
+.footer-top {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 60px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding-bottom: 80px;
+}
+
+.footer-brand h2 {
+  font-family: "Bebas Neue", sans-serif;
+  font-size: clamp(40px, 8vw, 70px);
+  line-height: 0.9;
+  margin-bottom: 20px;
+}
+
+.link-group h4 {
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 18px;
+  color: #e3b94d;
+  margin-bottom: 25px;
+}
+
+.link-group a, .link-group p {
+  display: block;
+  font-family: "Montserrat", sans-serif;
+  font-size: 13px;
+  color: #aaa;
+  text-decoration: none;
+  margin-bottom: 12px;
+}
+
+.footer-bottom {
+  padding-top: 40px;
+  display: flex;
+  justify-content: space-between;
+  font-family: "Montserrat", sans-serif;
+  font-size: 10px;
+  color: #444;
+  text-transform: uppercase;
+}

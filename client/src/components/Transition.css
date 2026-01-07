@@ -1,0 +1,23 @@
+.transition-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  /* Crucial: pointer-events: none ensures you can click the navbar through the overlay */
+  pointer-events: none; 
+  /* Must be higher than Navbar's z-index */
+  z-index: 99999; 
+}
+
+.transition-bar {
+  flex: 1;
+  height: 100%;
+  background-color: #111111;
+  transform: scaleY(0);
+}
+
+.bar-3 {
+  background-color: #e3b94d; /* Brand Gold */
+}

@@ -1,0 +1,50 @@
+.main-footer {
+  width: 100%;
+  background: #111;
+  padding: 100px 5% 40px 5%;
+  color: #f6f4f1;
+}
+
+.footer-top {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 60px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding-bottom: 80px;
+}
+
+.footer-brand h2 {
+  font-family: "Bebas Neue", sans-serif;
+  font-size: clamp(40px, 8vw, 70px);
+  line-height: 0.9;
+  margin-bottom: 20px;
+}
+
+.text-gold { color: #e3b94d; }
+
+.link-group h4 {
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 18px;
+  color: #e3b94d;
+  margin-bottom: 25px;
+}
+
+.link-group a, .link-group p {
+  display: block;
+  font-family: "Montserrat", sans-serif;
+  font-size: 13px;
+  color: #aaa;
+  text-decoration: none;
+  margin-bottom: 12px;
+}
+
+.footer-bottom {
+  padding-top: 40px;
+  display: flex;
+  justify-content: space-between;
+  font-family: "Montserrat", sans-serif;
+  font-size: 10px;
+  color: #444;
+  text-transform: uppercase;
+}
