@@ -121,7 +121,7 @@ const Home = () => {
           </h1>
           <p className="hero-desc">Bespeak catering for weddings and events in Surat. <br />Where culinary artistry meets service.</p>
           <div className="hero-btn-container">
-            <Link to="/booking" className="hero-book-btn">
+            <Link to="/menu" className="hero-book-btn">
               <span>INQUIRE FOR YOUR DATE</span>
               <div className="btn-fill"></div>
             </Link>

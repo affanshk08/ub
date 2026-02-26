@@ -1,11 +1,28 @@
-import { Link, useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { gsap } from "gsap";
 import ketchupBottle from "../assets/ketchup-bottle.svg";
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const user = JSON.parse(localStorage.getItem("user"));
+  
+  // Logic: State to track number of items in cart
+  const [cartCount, setCartCount] = useState(0);
+
+  // Logic: Update cart count whenever the page changes or storage updates
+  useEffect(() => {
+    const updateCount = () => {
+      const cart = JSON.parse(localStorage.getItem("ub_cart")) || [];
+      setCartCount(cart.length);
+    };
+
+    updateCount();
+    window.addEventListener("storage", updateCount); // Update if changed in another tab
+    
+    return () => window.removeEventListener("storage", updateCount);
+  }, [location]); // Re-run whenever user navigates to a new page
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -51,7 +68,6 @@ const Navbar = () => {
   };
 
   useEffect(() => {
-    /* ---------- NAV ITEM POWDER ---------- */
     const navItems = document.querySelectorAll(".nav-item");
     const navHandlers = [];
 
@@ -61,67 +77,27 @@ const Navbar = () => {
       item.addEventListener("mouseenter", handler);
     });
 
-    /* ---------- LOGO ANIMATION (ONE TIME) ---------- */
     const logo = document.querySelector(".nav-logo");
     if (!logo) return;
 
     const runLogoAnimation = () => {
       if (logo.dataset.animated === "true") return;
       logo.dataset.animated = "true";
-
       const bottle = document.querySelector(".ketchup-bottle");
       const bg = logo.querySelector(".logo-bg");
-
       const tl = gsap.timeline();
 
-      tl.fromTo(
-        bottle,
-        {
-          opacity: 0,
-          y: -40,          // start ABOVE logo
-          rotate: 0
-        },
-        {
-          opacity: 1,
-          y: 0,            // straight DOWN
-          duration: 1.2,   // slower
-          ease: "power3.inOut"
-        }
-      )
-        .to(bottle, {
-          rotate: -14,
-          duration: 0.9,
-          ease: "power2.inOut"
-        })
-        .fromTo(
-          bg,
-          { height: "0%" },
-          {
-            height: "100%",
-            duration: 1.8,
-            ease: "power2.inOut"
-          },
-          "+=0.2"
-        )
-        .to(bottle, {
-          rotate: 0,
-          duration: 0.6,
-          ease: "power2.inOut"
-        })
-        .to(bottle, {
-          y: -40,          // straight UP
-          opacity: 0,
-          duration: 1.0,
-          ease: "none"
-        });
+      tl.fromTo(bottle, { opacity: 0, y: -40, rotate: 0 }, { opacity: 1, y: 0, duration: 1.2, ease: "power3.inOut" })
+        .to(bottle, { rotate: -14, duration: 0.9, ease: "power2.inOut" })
+        .fromTo(bg, { height: "0%" }, { height: "100%", duration: 1.8, ease: "power2.inOut" }, "+=0.2")
+        .to(bottle, { rotate: 0, duration: 0.6, ease: "power2.inOut" })
+        .to(bottle, { y: -40, opacity: 0, duration: 1.0, ease: "none" });
     };
 
     logo.addEventListener("mouseenter", runLogoAnimation);
 
     return () => {
-      navHandlers.forEach(({ item, handler }) => {
-        item.removeEventListener("mouseenter", handler);
-      });
+      navHandlers.forEach(({ item, handler }) => item.removeEventListener("mouseenter", handler));
       logo.removeEventListener("mouseenter", runLogoAnimation);
     };
   }, []);
@@ -129,7 +105,6 @@ const Navbar = () => {
   return (
     <nav className="navbar">
       <div className="nav-inner">
-        {/* LOGO */}
         <div className="nav-logo" data-animated="false">
           <Link to="/" className="logo-text">
             <span className="logo-bg" />
@@ -137,27 +112,36 @@ const Navbar = () => {
           </Link>
         </div>
 
-        {/* KETCHUP BOTTLE */}
         <span className="ketchup-bottle">
           <img src={ketchupBottle} alt="ketchup bottle" />
         </span>
 
-        {/* NAV LINKS */}
         <div className="nav-links">
-          {["Home", "About", "Services", "Booking", "Contact"].map((label) => (
-            <Link
-              key={label}
-              to={label === "Home" ? "/" : `/${label.toLowerCase()}`}
-              className="nav-item"
-            >
-              {label}
-              <span className="powder-layer" />
-            </Link>
-          ))}
+          <Link to="/" className="nav-item">
+            Home
+            <span className="powder-layer" />
+          </Link>
 
-          {user && user.role === "admin" && (
-            <Link to="/admin" className="nav-item">
-              Admin
+          <Link to="/menu" className="nav-item">
+            Menu
+            <span className="powder-layer" />
+          </Link>
+
+          <Link to="/booking" className="nav-item">
+            Wedding Booking
+            <span className="powder-layer" />
+          </Link>
+
+          {/* ADDED: Cart Link with Notification Dot */}
+          <Link to="/cart" className="nav-item cart-link">
+            Cart
+            {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
+            <span className="powder-layer" />
+          </Link>
+
+          {user && (
+            <Link to="/profile" className="nav-item">
+              Profile
               <span className="powder-layer" />
             </Link>
           )}
@@ -172,6 +156,13 @@ const Navbar = () => {
               Logout
               <span className="powder-layer" />
             </button>
+          )}
+
+          {user && user.role === "admin" && (
+            <Link to="/admin" className="nav-item">
+              Admin
+              <span className="powder-layer" />
+            </Link>
           )}
         </div>
       </div>

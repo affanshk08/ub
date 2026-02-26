@@ -1,0 +1,98 @@
+.admin-dashboard-page {
+    padding: 160px 5% 100px;
+    background-color: #f6f4f1;
+    min-height: 100vh;
+}
+
+.admin-header {
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.admin-header h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(40px, 8vw, 80px);
+    color: #111;
+    letter-spacing: 2px;
+}
+
+.editorial-label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11px;
+    letter-spacing: 5px;
+    color: #e3b94d;
+    font-weight: 700;
+}
+
+.orders-table-wrapper {
+    background: white;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    overflow-x: auto;
+}
+
+.orders-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.orders-table th {
+    background: #111;
+    color: #f6f4f1;
+    text-align: left;
+    padding: 20px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 1px;
+}
+
+.orders-table td {
+    padding: 20px;
+    border-bottom: 1px solid #eee;
+    font-size: 14px;
+}
+
+.customer-cell {
+    font-weight: 700;
+}
+
+.dish-cell {
+    color: #e3b94d;
+    font-weight: 600;
+}
+
+.status-select,
+.payment-select {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    background: white;
+}
+
+/* Status colors */
+.status-select.pending {
+    color: #888;
+}
+
+.status-select.cooking {
+    color: #e3b94d;
+}
+
+.status-select.ready {
+    color: #2ecc71;
+}
+
+.status-select.delivered {
+    color: #3498db;
+}
+
+.payment-select.unpaid {
+    color: #e74c3c;
+}
+
+.payment-select.paid {
+    color: #2ecc71;
+}
