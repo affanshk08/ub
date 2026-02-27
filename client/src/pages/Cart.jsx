@@ -4,7 +4,13 @@ import "./Cart.css";
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
-  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  
+  // Checkout Flow States
+  const [checkoutStep, setCheckoutStep] = useState(0); // 0: Cart, 1: Logistics, 2: Payment
+  const [deliveryType, setDeliveryType] = useState("pickup"); // 'pickup' | 'delivery'
+  const [address, setAddress] = useState({ houseNo: "", area: "", pincode: "", coords: null });
+  const [paymentMethod, setPaymentMethod] = useState("online"); // 'online' | 'cod'
+  
   const [utr, setUtr] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
@@ -18,40 +24,70 @@ const Cart = () => {
     const updatedCart = cartItems.filter((_, i) => i !== index);
     setCartItems(updatedCart);
     localStorage.setItem("ub_cart", JSON.stringify(updatedCart));
+    if (updatedCart.length === 0) setCheckoutStep(0);
   };
 
-  const grandTotal = cartItems.reduce((acc, item) => acc + item.totalPrice, 0);
+  // --- FINANCIAL CALCULATIONS ---
+  const subTotal = cartItems.reduce((acc, item) => acc + item.totalPrice, 0);
+  const cgst = Math.round(subTotal * 0.025); // 2.5% Industry Standard
+  const sgst = Math.round(subTotal * 0.025); // 2.5% Industry Standard
+  const deliveryCharge = deliveryType === "delivery" ? 300 : 0; // Standard Flat Fee
+  const grandTotal = subTotal + cgst + sgst + deliveryCharge;
 
   // --- UPI LOGIC ---
-  const upiId = "affanshk021@oksbi"; // Your Real UPI ID
+  const upiId = "affanshk021@oksbi"; 
   const upiName = "Usman Bhai Bhatiyara"; 
   const upiIntentString = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(upiName)}&am=${grandTotal}&cu=INR`;
-  // Using a free API to generate the QR code instantly
   const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(upiIntentString)}`;
 
-  const handleProceedToPayment = () => {
+  const handleStartCheckout = () => {
     const user = JSON.parse(localStorage.getItem("user"));
     if (!user) {
       alert("Please login to proceed with booking.");
       navigate("/login");
       return;
     }
-    setShowPaymentModal(true);
+    setCheckoutStep(1);
+  };
+
+  const handleDetectLocation = () => {
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setAddress({ ...address, coords: { lat: position.coords.latitude, lng: position.coords.longitude } });
+          alert("📍 Map location pinned successfully!");
+        },
+        () => alert("Please allow location access in your browser to pin your map location.")
+      );
+    } else {
+      alert("Geolocation is not supported by your browser.");
+    }
+  };
+
+  const proceedToPayment = () => {
+    if (deliveryType === "delivery") {
+      if (!address.houseNo || !address.area || !address.pincode) {
+        return alert("Please fill in all address fields for delivery.");
+      }
+    }
+    setCheckoutStep(2);
   };
 
   const submitOrder = async () => {
-    if (utr.length < 12) {
-      return alert("Please enter a valid 12-digit UTR/Transaction ID.");
+    if (paymentMethod === "online" && utr.length < 12) {
+      return alert("Please enter a valid 12-digit UTR/Transaction ID for online payment.");
     }
 
     const user = JSON.parse(localStorage.getItem("user"));
-    // Ensure we extract the user ID correctly, regardless of how the token is structured
     const userId = user._id || user.id; 
-    
     setIsSubmitting(true);
 
     try {
-      // Loop through cart and save each order to database
+      // Format address for database
+      const finalAddress = deliveryType === "delivery" 
+        ? `${address.houseNo}, ${address.area}, ${address.pincode} ${address.coords ? '(Map Pinned)' : ''}`
+        : "Self-Pickup";
+
       for (const item of cartItems) {
         const res = await fetch("http://127.0.0.1:5000/api/orders/place", {
           method: "POST",
@@ -63,29 +99,36 @@ const Cart = () => {
             category: item.category,
             personCount: item.personCount,
             totalPrice: item.totalPrice,
-            // Fallbacks added just in case there's a malformed old item in local storage
             orderDate: item.orderDate || new Date().toISOString().split("T")[0],
             orderTime: item.orderTime || "12:00",
             phoneNumber: item.phoneNumber || user.phone || "0000000000",
-            utrNumber: utr
+            // NEW ADMIN-READY FIELDS
+            cgst: cgst,
+            sgst: sgst,
+            deliveryFee: deliveryCharge,
+            grandTotal: grandTotal,
+            deliveryType: deliveryType,
+            deliveryAddress: finalAddress,
+            paymentMethod: paymentMethod,
+            paymentStatus: paymentMethod === "cod" ? "Pending (COD)" : "Paid (Verification Pending)",
+            utrNumber: paymentMethod === "online" ? utr : "COD"
           })
         });
 
-        // Actively check if MongoDB threw a validation error
         if (!res.ok) {
           const errorData = await res.json();
           throw new Error(errorData.error || "Failed to save order to database.");
         }
       }
 
-      alert("Payment submitted! Your order is now pending verification.");
+      alert(paymentMethod === "online" ? "Payment submitted! Your order is pending verification." : "Order placed successfully! Please pay on delivery/pickup.");
       localStorage.removeItem("ub_cart");
       setCartItems([]);
-      setShowPaymentModal(false);
-      navigate("/profile"); // Send them to profile to see their new order
+      setCheckoutStep(0);
+      navigate("/profile"); 
     } catch (err) {
       console.error(err);
-      alert(`Error: ${err.message} \n\nPlease try emptying your cart and adding the items again from the Menu.`);
+      alert(`Error: ${err.message} \n\nPlease try emptying your cart and adding the items again.`);
     } finally {
       setIsSubmitting(false);
     }
@@ -125,59 +168,149 @@ const Cart = () => {
 
             <div className="cart-summary">
               <div className="total-row">
-                <span>ESTIMATED TOTAL</span>
-                <span className="grand-price">₹{grandTotal}</span>
+                <span>SUBTOTAL</span>
+                <span className="grand-price">₹{subTotal}</span>
               </div>
-              <button className="checkout-btn" onClick={handleProceedToPayment}>
-                PROCEED TO PAYMENT
+              <button className="checkout-btn" onClick={handleStartCheckout}>
+                PROCEED TO SECURE CHECKOUT
               </button>
             </div>
           </>
         )}
       </div>
 
-      {/* --- PAYMENT MODAL --- */}
-      {showPaymentModal && (
-        <div className="payment-modal-overlay">
-          <div className="payment-modal">
-            <button className="close-modal" onClick={() => setShowPaymentModal(false)}>✕</button>
-            <p className="editorial-label">SECURE CHECKOUT</p>
-            <h2>SCAN & PAY</h2>
+      {/* --- MULTI-STEP CHECKOUT MODAL --- */}
+      {checkoutStep > 0 && (
+        <div className="checkout-modal-overlay">
+          <div className="checkout-modal">
+            <button className="close-modal" onClick={() => setCheckoutStep(0)}>✕</button>
             
-            <div className="qr-container">
-              <img src={qrCodeUrl} alt="UPI QR Code" />
-              <p>Scan with Google Pay, PhonePe, or Paytm</p>
+            <div className="modal-progress">
+                <span className={checkoutStep === 1 ? "active" : ""}>01. LOGISTICS</span>
+                <span className="divider"></span>
+                <span className={checkoutStep === 2 ? "active" : ""}>02. PAYMENT</span>
             </div>
 
-            <div className="payment-details-box">
-              <div className="pay-row">
-                <span>PAYEE:</span>
-                <strong>{upiName}</strong>
+            {/* STEP 1: LOGISTICS */}
+            {checkoutStep === 1 && (
+              <div className="step-content">
+                <h2>DELIVERY METHOD</h2>
+                
+                <div className="method-toggles">
+                  <button 
+                    className={`method-btn ${deliveryType === 'pickup' ? 'active' : ''}`}
+                    onClick={() => setDeliveryType('pickup')}
+                  >
+                    SELF-PICKUP
+                  </button>
+                  <button 
+                    className={`method-btn ${deliveryType === 'delivery' ? 'active' : ''}`}
+                    onClick={() => setDeliveryType('delivery')}
+                  >
+                    DELIVER TO ME
+                  </button>
+                </div>
+
+                {deliveryType === "delivery" && (
+                  <div className="address-section">
+                    <button className="detect-location-btn" onClick={handleDetectLocation}>
+                       📍 PIN MY CURRENT LOCATION ON MAP
+                    </button>
+                    <p className="coords-status">{address.coords ? "Location Pinned Successfully ✓" : "Map location not pinned yet"}</p>
+                    
+                    <div className="address-form">
+                      <input 
+                        type="text" placeholder="House No. / Flat Name" 
+                        value={address.houseNo} onChange={(e) => setAddress({...address, houseNo: e.target.value})}
+                      />
+                      <input 
+                        type="text" placeholder="Area / Landmark" 
+                        value={address.area} onChange={(e) => setAddress({...address, area: e.target.value})}
+                      />
+                      <input 
+                        type="number" placeholder="Pincode" 
+                        value={address.pincode} onChange={(e) => setAddress({...address, pincode: e.target.value})}
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {deliveryType === "pickup" && (
+                  <div className="pickup-info">
+                    <p className="editorial-label">PICKUP ADDRESS</p>
+                    <h4>Usman Bhai Bhatiyara Catering HQ</h4>
+                    <p>Surat, Gujarat, India</p>
+                    <p className="note">Please arrive 15 minutes prior to your selected time.</p>
+                  </div>
+                )}
+
+                <button className="confirm-step-btn" onClick={proceedToPayment}>CONTINUE TO PAYMENT</button>
               </div>
-              <div className="pay-row">
-                <span>AMOUNT:</span>
-                <strong style={{fontSize: '24px', color: '#111'}}>₹{grandTotal}</strong>
+            )}
+
+            {/* STEP 2: PAYMENT */}
+            {checkoutStep === 2 && (
+              <div className="step-content">
+                <h2>FINALIZE ORDER</h2>
+                
+                {/* Break Down */}
+                <div className="invoice-breakdown">
+                  <div className="breakdown-row"><span>Subtotal</span><span>₹{subTotal}</span></div>
+                  <div className="breakdown-row"><span>CGST (2.5%)</span><span>₹{cgst}</span></div>
+                  <div className="breakdown-row"><span>SGST (2.5%)</span><span>₹{sgst}</span></div>
+                  {deliveryType === "delivery" && (
+                    <div className="breakdown-row highlight"><span>Delivery Charge</span><span>₹{deliveryCharge}</span></div>
+                  )}
+                  <div className="breakdown-row grand-total"><span>GRAND TOTAL</span><span>₹{grandTotal}</span></div>
+                </div>
+
+                <div className="method-toggles payment-toggles">
+                  <button 
+                    className={`method-btn ${paymentMethod === 'online' ? 'active' : ''}`}
+                    onClick={() => setPaymentMethod('online')}
+                  >
+                    ONLINE (QR)
+                  </button>
+                  <button 
+                    className={`method-btn ${paymentMethod === 'cod' ? 'active' : ''}`}
+                    onClick={() => setPaymentMethod('cod')}
+                  >
+                    CASH ON DELIVERY
+                  </button>
+                </div>
+
+                {paymentMethod === "online" ? (
+                  <div className="online-payment-box">
+                    <div className="qr-container">
+                      <img src={qrCodeUrl} alt="UPI QR Code" />
+                      <p>Scan with Google Pay, PhonePe, or Paytm</p>
+                    </div>
+                    <div className="utr-input-group">
+                      <label>ENTER 12-DIGIT UTR / TRANSACTION ID</label>
+                      <input 
+                        type="text" placeholder="e.g. 301234567890" maxLength="12"
+                        value={utr} onChange={(e) => setUtr(e.target.value)}
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <div className="cod-info-box">
+                    <p>You have selected Cash on Delivery. Please keep exact change ready at the time of {deliveryType}.</p>
+                  </div>
+                )}
+
+                <div className="modal-actions-split">
+                  <button className="back-step-btn" onClick={() => setCheckoutStep(1)}>BACK</button>
+                  <button 
+                    className={`confirm-step-btn ${isSubmitting ? 'loading' : ''}`} 
+                    onClick={submitOrder} disabled={isSubmitting}
+                  >
+                    {isSubmitting ? "PROCESSING..." : "CONFIRM ORDER"}
+                  </button>
+                </div>
               </div>
-            </div>
-
-            <div className="utr-input-group">
-              <label>ENTER 12-DIGIT UTR / TRANSACTION ID</label>
-              <input 
-                type="text" 
-                placeholder="e.g. 301234567890" 
-                maxLength="12"
-                value={utr}
-                onChange={(e) => setUtr(e.target.value)}
-              />
-            </div>
-
-            <button 
-              className={`confirm-payment-btn ${isSubmitting ? 'loading' : ''}`} 
-              onClick={submitOrder}
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? "PROCESSING..." : "CONFIRM PAYMENT"}
-            </button>
+            )}
+            
           </div>
         </div>
       )}

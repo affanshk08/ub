@@ -182,7 +182,38 @@
   opacity: 0.2;
 }
 
-/* --- SECTION 04: ACTION NAV --- */
+/* --- SECTION 04: HORIZONTAL SCROLL TEXT --- */
+.horizontal-scroll-section {
+  width: 100%;
+  height: 100vh;
+  background: #ffffff; /* Changed to stark white */
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  position: relative;
+}
+
+.horizontal-scroll-wrapper {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  width: max-content;
+  padding-left: 5vw; 
+  padding-right: 10vw; /* This buffer is respected by GSAP now */
+}
+
+.horizontal-text {
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 50vh;
+  background-color: #111; /* Decreased to 50vh */
+  color: #e3b94d; /* Changed to pitch black */
+  white-space: nowrap; 
+  line-height: 0.85; /* Tighter line-height to remove empty gaps above/below */
+  text-transform: uppercase;
+  letter-spacing: -2px; /* Slight negative tracking looks better at this scale */
+}
+
+/* --- SECTION 05: ACTION NAV --- */
 .nav-expand-section {
   width: 100%;
   height: 50vh;

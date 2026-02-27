@@ -4,82 +4,141 @@ import gsap from "gsap";
 import { useNavigate, Link } from "react-router-dom"; 
 import "./Menu.css";
 
-const MENU_DATA = {
-  Starter: {
-    "Tikka": [
-      { id: 1, name: "Malai Tikka", price: "380", desc: "A royal Bhatiyara classic. Tender chicken chunks are marinated for 12 hours in a velvety blend of heavy cream, hung curd, and cashew paste, then charcoal-grilled until they melt in your mouth.", images: ["https://images.unsplash.com/photo-1626074353765-517a681e40be?auto=format&fit=crop&w=800&q=80", "https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?auto=format&fit=crop&w=800&q=80"] },
-      { id: 2, name: "Golden Tikka", price: "390", desc: "Infused with high-grade saffron and fresh turmeric, this tikka offers a vibrant hue and a warm, earthy flavor profile that celebrates the sun-kissed spices of Gujarat.", images: ["https://images.unsplash.com/photo-1603360946369-dc9bb6258143?auto=format&fit=crop&w=800&q=80"] },
-      { id: 3, name: "Kashmiri Tikka", price: "400", desc: "A mild yet aromatic preparation using authentic Kashmiri red chilies and mace, providing a deep red color without the burning heat, perfect for the refined palate.", images: ["https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=800&q=80"] },
-      { id: 4, name: "Machhi Masal Tikka", price: "450", desc: "Fresh river fish fillets marinated in a robust Bhatiyara 'masal'—a secret blend of 21 spices—charred to a crispy exterior while remaining succulent inside.", images: ["https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=800&q=80"] },
-      { id: 5, name: "Pakistani Tikka", price: "420", desc: "Inspired by the bold street flavors of Lahore, this tikka is heavily spiced with crushed coriander and black pepper, finished with a heavy smoke 'Dhungar'.", images: ["https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?auto=format&fit=crop&w=800&q=80"] },
-      { id: 6, name: "Schezwan Tikka", price: "380", desc: "A contemporary Surat fusion where tradition meets the orient. Tandoori chicken tossed in a house-made fiery Schezwan sauce with toasted sesame.", images: ["https://images.unsplash.com/photo-1524331155111-e9e99677020d?auto=format&fit=crop&w=800&q=80"] }
-    ],
-    "Tangdi": [
-      { id: 7, name: "Makhhan Mari Tangdi", price: "450", desc: "Succulent chicken drumsticks glazed with clarified butter (Makhhan) and a heavy dusting of cracked Tellicherry black pepper for a rich, spicy kick.", images: ["https://images.unsplash.com/photo-1527477396000-e27163b481c2?auto=format&fit=crop&w=800&q=80"] },
-      { id: 8, name: "Irani Tangdi", price: "420", desc: "A heritage recipe featuring a marinade of pomegranate molasses and dried herbs, reflecting the historic Persian culinary influence on Surat's food culture.", images: ["https://images.unsplash.com/photo-1610057099443-fde8c4d50f91?auto=format&fit=crop&w=800&q=80"] },
-      { id: 9, name: "Schezwan Tangdi", price: "1", desc: "Jumbo drumsticks marinated overnight and finished in a high-flame wok with red chilies, garlic, and fermented bean paste.", images: ["https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?auto=format&fit=crop&w=800&q=80"] }
-    ],
-    "Rolls & Others": [
-      { id: 10, name: "Tiranga Roll", price: "350", desc: "A stunning visual and culinary treat. Three distinct layers of paneer, spinach, and carrot-infused mash rolled together and lightly fried.", images: ["https://images.unsplash.com/photo-1539252554454-31d626bd57b8?auto=format&fit=crop&w=800&q=80"] },
-      { id: 11, name: "Cheese Roll", price: "320", desc: "A favorite among the youth. Crispy golden crust wrapping a molten blend of premium processed and mozzarella cheese with a hint of jalapeño.", images: ["https://images.unsplash.com/photo-1612195583950-b8fd34c87093?auto=format&fit=crop&w=800&q=80"] },
-      { id: 12, name: "Cutlet", price: "280", desc: "Traditional Bhatiyara vegetable cutlets, hand-pounded and seasoned with fresh mint, ginger, and green chilies, served with a tangy imli dip.", images: ["https://images.unsplash.com/photo-1626132646529-5aa71394c98a?auto=format&fit=crop&w=800&q=80"] },
-      { id: 13, name: "Butta Kawab", price: "300", desc: "Delicate kebabs made from fresh sweet corn and potatoes, flavored with roasted cumin and fresh coriander, shallow fried to a crisp.", images: ["https://images.unsplash.com/photo-1603962285838-838104440129?auto=format&fit=crop&w=800&q=80"] }
-    ]
+// 1. CRUD-Ready Backend Structure
+const initialMenuData = {
+  veg: {
+    "Farsan": {
+      "Steamed Classics": [
+        { id: "v1", name: "Surti Locho", price: "250", desc: "A Surat specialty. Steamed, spiced gram flour base served hot with oil, butter, and a signature locho masala.", images: ["https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?auto=format&fit=crop&w=800&q=80"] },
+        { id: "v2", name: "Khaman", price: "220", desc: "Soft, spongy steamed cakes made from fermented chana dal, tempered with mustard seeds and green chilies.", images: ["https://images.unsplash.com/photo-1626074353765-517a681e40be?auto=format&fit=crop&w=800&q=80"] },
+        { id: "v3", name: "Khandvi", price: "240", desc: "Thin, tightly rolled bite-sized pieces made from gram flour and yogurt, garnished with fresh coconut and cilantro.", images: ["https://images.unsplash.com/photo-1603360946369-dc9bb6258143?auto=format&fit=crop&w=800&q=80"] },
+        { id: "v4", name: "Idada (White Dhokla)", price: "200", desc: "Traditional white steamed dhokla made from a fermented batter of rice and urad dal, heavily dusted with black pepper.", images: ["https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=800&q=80"] },
+        { id: "v5", name: "Patra", price: "260", desc: "Colocasia leaves smeared with a sweet, spicy, and tangy gram flour paste, rolled, steamed, and sliced.", images: ["https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=800&q=80"] }
+      ],
+      "Crispy Delights": [
+        { id: "v6", name: "Lilva Kachori", price: "300", desc: "Crispy, deep-fried pastry balls stuffed with a fresh, seasonal green pigeon peas (tuvar lilva) filling.", images: ["https://images.unsplash.com/photo-1603962285838-838104440129?auto=format&fit=crop&w=800&q=80"] },
+        { id: "v7", name: "Methi Na Gota", price: "280", desc: "Golden, crispy fritters made with gram flour, fresh fenugreek leaves, and whole coriander seeds.", images: ["https://images.unsplash.com/photo-1612195583950-b8fd34c87093?auto=format&fit=crop&w=800&q=80"] },
+        { id: "v8", name: "Dahi Vada", price: "320", desc: "Soft lentil dumplings soaked in creamy, whipped sweet yogurt, topped with tamarind and mint chutneys.", images: ["https://images.unsplash.com/photo-1626132646529-5aa71394c98a?auto=format&fit=crop&w=800&q=80"] },
+        { id: "v9", name: "Mix Veg Samosa", price: "280", desc: "Classic flaky pastry filled with a savory mixture of spiced potatoes, peas, and carrots.", images: ["https://images.unsplash.com/photo-1539252554454-31d626bd57b8?auto=format&fit=crop&w=800&q=80"] },
+        { id: "v10", name: "Kele Ki Tikki", price: "300", desc: "Pan-fried patties made from raw bananas and subtle fasting-friendly spices.", images: ["https://images.unsplash.com/photo-1524331155111-e9e99677020d?auto=format&fit=crop&w=800&q=80"] }
+      ]
+    },
+    "Main Course": {
+      "Traditional Shaak": [
+        { id: "v11", name: "Surti Undhiyu", price: "450", desc: "The legendary Surat winter stew. A complex, slow-cooked mix of seasonal vegetables, muthiya, and fresh green garlic.", images: ["https://images.unsplash.com/photo-1563379091339-03b21bc4a4f8?auto=format&fit=crop&w=800&q=80"] },
+        { id: "v12", name: "Sev Tameta", price: "350", desc: "A Kathiyawadi staple. Sweet and spicy tomato curry garnished with a thick layer of crispy besan sev.", images: ["https://images.unsplash.com/photo-1603894584115-f73f2ec851ad?auto=format&fit=crop&w=800&q=80"] },
+        { id: "v13", name: "Ringan No Olo", price: "380", desc: "Fire-roasted eggplant mashed and cooked with spring onions, green garlic, and fresh tomatoes.", images: ["https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?auto=format&fit=crop&w=800&q=80"] },
+        { id: "v14", name: "Lasaniya Batata", price: "320", desc: "Baby potatoes simmered in a fierce, red chili and heavy garlic sauce.", images: ["https://images.unsplash.com/photo-1545231027-63b6f2a3c2dd?auto=format&fit=crop&w=800&q=80"] },
+        { id: "v15", name: "Bharela Bhinda", price: "360", desc: "Whole okra stuffed with a roasted blend of besan, peanuts, coriander powder, and jaggery.", images: ["https://images.unsplash.com/photo-1601303582555-538600d1641b?auto=format&fit=crop&w=800&q=80"] },
+        { id: "v16", name: "Kaju Karela", price: "400", desc: "Bitter gourd roundels cooked with premium whole cashews to balance the bitterness with a rich sweetness.", images: ["https://images.unsplash.com/photo-1588166524941-3bf61a9c41db?auto=format&fit=crop&w=800&q=80"] }
+      ],
+      "Paneer & Rich Gravies": [
+        { id: "v17", name: "Paneer Butter Masala", price: "420", desc: "Soft cubes of paneer immersed in a rich, creamy, and mildly sweet tomato gravy.", images: ["https://images.unsplash.com/photo-1613292443284-8d10ef9383fe?auto=format&fit=crop&w=800&q=80"] },
+        { id: "v18", name: "Kaju Curry", price: "460", desc: "Roasted whole cashews in a thick, brown onion and tomato base with warming spices.", images: ["https://images.unsplash.com/photo-1593560708920-61dd98c46a4e?auto=format&fit=crop&w=800&q=80"] },
+        { id: "v19", name: "Palak Paneer", price: "400", desc: "Fresh spinach puree cooked with ginger, garlic, and paneer cubes, finished with cream.", images: ["https://images.unsplash.com/photo-1603894584115-f73f2ec851ad?auto=format&fit=crop&w=800&q=80"] },
+        { id: "v20", name: "Malai Kofta", price: "450", desc: "Deep-fried potato and paneer dumplings served in a luxurious, white cashew gravy.", images: ["https://images.unsplash.com/photo-1545231027-63b6f2a3c2dd?auto=format&fit=crop&w=800&q=80"] },
+        { id: "v21", name: "Veg Kadai", price: "380", desc: "Mixed seasonal vegetables tossed in an iron wok with ground coriander and dry red chilies.", images: ["https://images.unsplash.com/photo-1601303582555-538600d1641b?auto=format&fit=crop&w=800&q=80"] }
+      ],
+      "Dal & Rice": [
+        { id: "v22", name: "Dal Dhokli", price: "320", desc: "A comforting Gujarati classic. Spiced wheat flour pieces simmered in a sweet, sour, and spicy tuvar dal.", images: ["https://images.unsplash.com/photo-1633945274405-b6c8069047b0?auto=format&fit=crop&w=800&q=80"] },
+        { id: "v23", name: "Kadhi Khichdi", price: "300", desc: "Simple yellow lentil and rice khichdi served alongside a warm, spiced yogurt and besan kadhi.", images: ["https://images.unsplash.com/photo-1626500155537-883777587788?auto=format&fit=crop&w=800&q=80"] },
+        { id: "v24", name: "Surti Dal", price: "250", desc: "A sweet and tangy pigeon pea lentil preparation tempered with peanuts, tomatoes, and kokum.", images: ["https://images.unsplash.com/photo-1512058560366-cd2429ff5c7c?auto=format&fit=crop&w=800&q=80"] },
+        { id: "v25", name: "Rajwadi Khichdi", price: "340", desc: "A rich, vegetable-loaded khichdi tempered generously with whole spices and pure desi ghee.", images: ["https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=800&q=80"] },
+        { id: "v26", name: "Veg Pulao", price: "320", desc: "Light, fragrant basmati rice tossed with green peas, carrots, and french beans.", images: ["https://images.unsplash.com/photo-1631515243349-e0cb75fb8d3a?auto=format&fit=crop&w=800&q=80"] },
+        { id: "v27", name: "Jeera Rice", price: "220", desc: "Fluffy basmati rice tempered with roasted cumin seeds and fresh coriander.", images: ["https://images.unsplash.com/photo-1563379091339-03b21bc4a4f8?auto=format&fit=crop&w=800&q=80"] }
+      ]
+    },
+    "Mithai": {
+      "Traditional": [
+        { id: "v28", name: "Surti Ghari", price: "380", desc: "The pinnacle of Surat's sweets. A rich disc made of puri dough, mawa, ghee, and sugar, packed with nuts.", images: ["https://images.unsplash.com/photo-1589113103553-5384496ff27b?auto=format&fit=crop&w=800&q=80"] },
+        { id: "v29", name: "Kesar Shrikhand", price: "260", desc: "Thick, strained yogurt sweetened and flavored deeply with saffron threads and cardamom.", images: ["https://images.unsplash.com/photo-1621361019047-98319f390886?auto=format&fit=crop&w=800&q=80"] },
+        { id: "v30", name: "Basundi", price: "280", desc: "Sweetened, dense milk boiled down to a creamy texture, served chilled with sliced almonds.", images: ["https://images.unsplash.com/photo-1589302168068-964664d93dc0?auto=format&fit=crop&w=800&q=80"] },
+        { id: "v31", name: "Mohanthal", price: "300", desc: "Traditional gram flour fudge enriched with generous amounts of ghee, offering a granular, melt-in-mouth texture.", images: ["https://images.unsplash.com/photo-1596797038583-18a68a637311?auto=format&fit=crop&w=800&q=80"] },
+        { id: "v32", name: "Kopra Pak", price: "240", desc: "A soft, moist coconut fudge flavored lightly with saffron and cardamom.", images: ["https://images.unsplash.com/photo-1589113103553-5384496ff27b?auto=format&fit=crop&w=800&q=80"] },
+        { id: "v33", name: "Churma Ladoo", price: "280", desc: "Crushed, fried wheat dough mixed with ghee and jaggery, rolled into delicious festive spheres.", images: ["https://images.unsplash.com/photo-1596797038583-18a68a637311?auto=format&fit=crop&w=800&q=80"] },
+        { id: "v34", name: "Dudhi Halwa", price: "220", desc: "Fresh bottle gourd slow-cooked with whole milk until reduced, garnished with khoya.", images: ["https://images.unsplash.com/photo-1621361019047-98319f390886?auto=format&fit=crop&w=800&q=80"] }
+      ]
+    }
   },
-  "Main Course": {
-    "Biryani": [
-      { id: 14, name: "Dum Biryani", price: "550", desc: "The ultimate celebration of meat and rice. Slow-cooked in a heavy copper handi sealed with dough, allowing the flavors to penetrate every grain of basmati.", images: ["https://images.unsplash.com/photo-1563379091339-03b21bc4a4f8?auto=format&fit=crop&w=800&q=80"] },
-      { id: 15, name: "Tikka Biryani", price: "580", desc: "A smoky delight where tandoor-roasted chicken tikkas are layered with biryani rice, giving each bite a distinct charcoal-grilled aroma.", images: ["https://images.unsplash.com/photo-1589302168068-964664d93dc0?auto=format&fit=crop&w=800&q=80"] },
-      { id: 16, name: "Seekh Biryani", price: "600", desc: "An innovative blend where juicy mutton seekh kebabs are nestled within layers of saffron-infused rice and caramelized onions.", images: ["https://images.unsplash.com/photo-1631515243349-e0cb75fb8d3a?auto=format&fit=crop&w=800&q=80"] },
-      { id: 17, name: "Italian Biryani", price: "620", desc: "A global fusion featuring Mediterranean herbs like basil and rosemary, cooked with premium olive oil and sun-dried tomatoes alongside traditional spices.", images: ["https://images.unsplash.com/photo-1512058560366-cd2429ff5c7c?auto=format&fit=crop&w=800&q=80"] },
-      { id: 18, name: "Nargisi Biryani", price: "650", desc: "Royal biryani served with Nargisi Koftas—hard-boiled eggs encased in a layer of spiced minced meat, resembling the 'Nargis' (Narcissus) flower.", images: ["https://images.unsplash.com/photo-1645177623570-5283995804bc?auto=format&fit=crop&w=800&q=80"] },
-      { id: 19, name: "Paneer Tikka Biryani (Veg.)", price: "480", desc: "A vegetarian masterpiece. Large cubes of malai paneer are grilled and dum-cooked with aromatic basmati, mint, and saffron.", images: ["https://images.unsplash.com/photo-1543339308-43e59d6b73a6?auto=format&fit=crop&w=800&q=80"] }
-    ],
-    "Gravy": [
-      { id: 20, name: "Chicken Angara", price: "450", desc: "A fiery red, spicy gravy that carries the 'Angar' (fire) of Surat. Finished with a live coal 'Dhungar' for a deep, smoky undertone.", images: ["https://images.unsplash.com/photo-1603894584115-f73f2ec851ad?auto=format&fit=crop&w=800&q=80"] },
-      { id: 21, name: "Chicken Kadai", price: "420", desc: "Cooked in a traditional iron wok, this dish features chunks of bell peppers and onions in a thick, tomato-based gravy seasoned with freshly ground coriander.", images: ["https://images.unsplash.com/photo-1601303582555-538600d1641b?auto=format&fit=crop&w=800&q=80"] },
-      { id: 22, name: "Chicken Patiyala", price: "480", desc: "A rich, cashew-based yellow gravy hidden under a thin, lacy egg omelet, offering a surprising texture and royal taste.", images: ["https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?auto=format&fit=crop&w=800&q=80"] },
-      { id: 23, name: "Butter Chicken", price: "460", desc: "The timeless classic. Shredded tandoori chicken simmered in a smooth-as-silk tomato, butter, and cream sauce with a touch of dried fenugreek.", images: ["https://images.unsplash.com/photo-1588166524941-3bf61a9c41db?auto=format&fit=crop&w=800&q=80"] },
-      { id: 24, name: "Golden Chicken", price: "470", desc: "Our signature white gravy, enriched with cream, almonds, and saffron, giving it a majestic golden hue and a mildly sweet, nutty finish.", images: ["https://images.unsplash.com/photo-1545231027-63b6f2a3c2dd?auto=format&fit=crop&w=800&q=80"] },
-      { id: 25, name: "Machhi Masala Chicken", price: "500", desc: "Usually reserved for fish, this tangy and spicy green-masala blend (coriander, chili, and garlic) is applied to tender chicken pieces.", images: ["https://images.unsplash.com/photo-1613292443284-8d10ef9383fe?auto=format&fit=crop&w=800&q=80"] },
-      { id: 26, name: "Chicken Kophta", price: "440", desc: "Delicate, hand-rolled chicken meatballs seasoned with aromatics, simmered in a rich, dark brown onion gravy.", images: ["https://images.unsplash.com/photo-1593560708920-61dd98c46a4e?auto=format&fit=crop&w=800&q=80"] }
-    ],
-    "Others": [
-      { id: 27, name: "Kadhi Khichdi", price: "250", desc: "The soul of Surat. Comforting yellow lentil khichdi served with a piping hot bowl of spiced, tempered yogurt curry (Kadhi).", images: ["https://images.unsplash.com/photo-1626500155537-883777587788?auto=format&fit=crop&w=800&q=80"] },
-      { id: 28, name: "Dal Pulav", price: "280", desc: "Lightly spiced basmati rice paired with a rich, buttery side of slow-cooked arhar dal, tempered with garlic and dry red chilies.", images: ["https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=800&q=80"] },
-      { id: 29, name: "Tev Pulav", price: "300", desc: "A traditional Surat street favorite. Vegetable-laden spicy rice cooked with a unique blend of 'Tev' spices and fresh greens.", images: ["https://images.unsplash.com/photo-1633945274405-b6c8069047b0?auto=format&fit=crop&w=800&q=80"] },
-      { id: 30, name: "Manda Dalli", price: "320", desc: "A legacy dish. Hand-stretched, paper-thin Manda rotis served with a special thick-textured lentil preparation.", images: ["https://images.unsplash.com/photo-1505253149613-11b847673558?auto=format&fit=crop&w=800&q=80"] },
-      { id: 31, name: "Yakhni Pulav", price: "450", desc: "A subtle, non-spicy meat and rice preparation where the grains are cooked in a clarified meat stock infused with whole spices.", images: ["https://images.unsplash.com/photo-1631515243349-e0cb75fb8d3a?auto=format&fit=crop&w=800&q=80"] },
-      { id: 32, name: "Tuvar-Pulav Palita", price: "350", desc: "Celebrating Surat's agricultural roots. Fresh green Tuvar beans cooked with rice and a specialized spice blend known as 'Palita'.", images: ["https://images.unsplash.com/photo-1512058560366-cd2429ff5c7c?auto=format&fit=crop&w=800&q=80"] },
-      { id: 33, name: "Veg Biryani", price: "380", desc: "Seasonal vegetables, paneer, and soy chunks layered with high-aroma rice and fried onions, slow-cooked to perfection.", images: ["https://images.unsplash.com/photo-1563379091339-03b21bc4a4f8?auto=format&fit=crop&w=800&q=80"] },
-      { id: 34, name: "Veg Pulao", price: "320", desc: "A light and healthy option. Basmati rice tossed with garden-fresh peas, beans, and carrots with a hint of whole black pepper.", images: ["https://images.unsplash.com/photo-1589302168068-964664d93dc0?auto=format&fit=crop&w=800&q=80"] }
-    ]
-  },
-  Dessert: {
-    "Traditional": [
-      { id: 35, name: "Sevio ka Shola", price: "220", desc: "A decadent dessert of fine vermicelli cooked in thickened milk, flavored with cardamom and topped with a 'Shola' (spark) of silver leaf.", images: ["https://images.unsplash.com/photo-1589113103553-5384496ff27b?auto=format&fit=crop&w=800&q=80"] },
-      { id: 36, name: "Chawal ka Shola", price: "200", desc: "Rich rice pudding (Kheer) slow-reduced until it reaches a creamy, rabri-like consistency, served chilled with toasted nuts.", images: ["https://images.unsplash.com/photo-1596797038583-18a68a637311?auto=format&fit=crop&w=800&q=80"] },
-      { id: 37, name: "Jarda", price: "180", desc: "Sweet, saffron-flavored rice cooked with sugar, ghee, and loaded with almonds, cashews, and raisins—a festive Bhatiyara staple.", images: ["https://images.unsplash.com/photo-1589302168068-964664d93dc0?auto=format&fit=crop&w=800&q=80"] },
-      { id: 38, name: "Thuli", price: "160", desc: "Traditional Gujarati cracked wheat dessert cooked with jaggery and ghee, offering a healthy yet indulgent end to the meal.", images: ["https://images.unsplash.com/photo-1621361019047-98319f390886?auto=format&fit=crop&w=800&q=80"] },
-      { id: 39, name: "Dudhi Ka Halwa", price: "180", desc: "Fresh bottle gourd grated and slow-cooked with whole milk and sugar, garnished with khoya and silvered pistachios.", images: ["https://images.unsplash.com/photo-1589113103553-5384496ff27b?auto=format&fit=crop&w=800&q=80"] },
-      { id: 40, name: "Gajar Ka Halwa", price: "190", desc: "The winter favorite. Seasonal red carrots slow-braised in milk and desi ghee, creating a rich, melt-in-the-mouth texture.", images: ["https://images.unsplash.com/photo-1621361019047-98319f390886?auto=format&fit=crop&w=800&q=80"] },
-      { id: 41, name: "Akhrot Ka Halwa", price: "250", desc: "An artisanal walnut paste halwa, rich in omega-3 and earthy flavors, slow-cooked to a dark, caramelized perfection.", images: ["https://images.unsplash.com/photo-1596797038583-18a68a637311?auto=format&fit=crop&w=800&q=80"] }
-    ]
+  nonveg: {
+    Starter: {
+      "Tikka": [
+        { id: "n1", name: "Malai Tikka", price: "380", desc: "A royal Bhatiyara classic. Tender chicken chunks are marinated for 12 hours in a velvety blend of heavy cream, hung curd, and cashew paste.", images: ["https://images.unsplash.com/photo-1626074353765-517a681e40be?auto=format&fit=crop&w=800&q=80"] },
+        { id: "n2", name: "Golden Tikka", price: "390", desc: "Infused with high-grade saffron and fresh turmeric, this tikka offers a vibrant hue and a warm, earthy flavor profile.", images: ["https://images.unsplash.com/photo-1603360946369-dc9bb6258143?auto=format&fit=crop&w=800&q=80"] },
+        { id: "n3", name: "Kashmiri Tikka", price: "400", desc: "A mild yet aromatic preparation using authentic Kashmiri red chilies and mace.", images: ["https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=800&q=80"] },
+        { id: "n4", name: "Machhi Masal Tikka", price: "450", desc: "Fresh river fish fillets marinated in a robust Bhatiyara 'masal'—a secret blend of 21 spices.", images: ["https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=800&q=80"] },
+        { id: "n5", name: "Pakistani Tikka", price: "420", desc: "Inspired by the bold street flavors of Lahore, heavily spiced with crushed coriander.", images: ["https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?auto=format&fit=crop&w=800&q=80"] },
+        { id: "n6", name: "Schezwan Tikka", price: "380", desc: "A contemporary Surat fusion where tradition meets the orient.", images: ["https://images.unsplash.com/photo-1524331155111-e9e99677020d?auto=format&fit=crop&w=800&q=80"] }
+      ],
+      "Tangdi": [
+        { id: "n7", name: "Makhhan Mari Tangdi", price: "450", desc: "Succulent chicken drumsticks glazed with clarified butter (Makhhan) and cracked Tellicherry black pepper.", images: ["https://images.unsplash.com/photo-1527477396000-e27163b481c2?auto=format&fit=crop&w=800&q=80"] },
+        { id: "n8", name: "Irani Tangdi", price: "420", desc: "A heritage recipe featuring a marinade of pomegranate molasses and dried herbs.", images: ["https://images.unsplash.com/photo-1610057099443-fde8c4d50f91?auto=format&fit=crop&w=800&q=80"] },
+        { id: "n9", name: "Schezwan Tangdi", price: "400", desc: "Jumbo drumsticks marinated overnight and finished in a high-flame wok.", images: ["https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?auto=format&fit=crop&w=800&q=80"] }
+      ],
+      "Rolls & Others": [
+        { id: "n10", name: "Tiranga Roll", price: "350", desc: "Three distinct layers of chicken mince rolled together and lightly fried.", images: ["https://images.unsplash.com/photo-1539252554454-31d626bd57b8?auto=format&fit=crop&w=800&q=80"] },
+        { id: "n11", name: "Cheese Chicken Roll", price: "380", desc: "Crispy golden crust wrapping a molten blend of premium cheese and spicy chicken chunks.", images: ["https://images.unsplash.com/photo-1612195583950-b8fd34c87093?auto=format&fit=crop&w=800&q=80"] },
+        { id: "n12", name: "Mutton Cutlet", price: "400", desc: "Traditional Bhatiyara mutton cutlets, hand-pounded and seasoned with fresh mint.", images: ["https://images.unsplash.com/photo-1626132646529-5aa71394c98a?auto=format&fit=crop&w=800&q=80"] },
+        { id: "n13", name: "Chicken Seekh Kebab", price: "350", desc: "Minced chicken seasoned with roasted cumin and fresh coriander, skewered and grilled.", images: ["https://images.unsplash.com/photo-1603962285838-838104440129?auto=format&fit=crop&w=800&q=80"] }
+      ]
+    },
+    "Main Course": {
+      "Biryani": [
+        { id: "n14", name: "Mutton Dum Biryani", price: "650", desc: "The ultimate celebration of meat and rice. Slow-cooked in a heavy copper handi.", images: ["https://images.unsplash.com/photo-1563379091339-03b21bc4a4f8?auto=format&fit=crop&w=800&q=80"] },
+        { id: "n15", name: "Chicken Tikka Biryani", price: "580", desc: "A smoky delight where tandoor-roasted chicken tikkas are layered with biryani rice.", images: ["https://images.unsplash.com/photo-1589302168068-964664d93dc0?auto=format&fit=crop&w=800&q=80"] },
+        { id: "n16", name: "Mutton Seekh Biryani", price: "680", desc: "Juicy mutton seekh kebabs are nestled within layers of saffron-infused rice.", images: ["https://images.unsplash.com/photo-1631515243349-e0cb75fb8d3a?auto=format&fit=crop&w=800&q=80"] },
+        { id: "n17", name: "Italian Chicken Biryani", price: "620", desc: "A global fusion featuring Mediterranean herbs cooked with olive oil alongside traditional spices.", images: ["https://images.unsplash.com/photo-1512058560366-cd2429ff5c7c?auto=format&fit=crop&w=800&q=80"] },
+        { id: "n18", name: "Nargisi Kofta Biryani", price: "700", desc: "Royal biryani served with Nargisi Koftas—hard-boiled eggs encased in spiced minced meat.", images: ["https://images.unsplash.com/photo-1645177623570-5283995804bc?auto=format&fit=crop&w=800&q=80"] },
+        { id: "n19", name: "Chicken Dum Biryani", price: "550", desc: "Classic chicken and basmati rice slow-cooked in a sealed dough handi.", images: ["https://images.unsplash.com/photo-1543339308-43e59d6b73a6?auto=format&fit=crop&w=800&q=80"] }
+      ],
+      "Gravy": [
+        { id: "n20", name: "Chicken Angara", price: "450", desc: "A fiery red, spicy gravy that carries the 'Angar' (fire) of Surat.", images: ["https://images.unsplash.com/photo-1603894584115-f73f2ec851ad?auto=format&fit=crop&w=800&q=80"] },
+        { id: "n21", name: "Chicken Kadai", price: "420", desc: "Cooked in a traditional iron wok with chunks of bell peppers and onions.", images: ["https://images.unsplash.com/photo-1601303582555-538600d1641b?auto=format&fit=crop&w=800&q=80"] },
+        { id: "n22", name: "Chicken Patiyala", price: "480", desc: "A rich, cashew-based yellow gravy hidden under a thin, lacy egg omelet.", images: ["https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?auto=format&fit=crop&w=800&q=80"] },
+        { id: "n23", name: "Butter Chicken", price: "460", desc: "The timeless classic. Shredded tandoori chicken simmered in a tomato, butter, and cream sauce.", images: ["https://images.unsplash.com/photo-1588166524941-3bf61a9c41db?auto=format&fit=crop&w=800&q=80"] },
+        { id: "n24", name: "Golden Chicken", price: "470", desc: "Our signature white gravy, enriched with cream, almonds, and saffron.", images: ["https://images.unsplash.com/photo-1545231027-63b6f2a3c2dd?auto=format&fit=crop&w=800&q=80"] },
+        { id: "n25", name: "Machhi Masala Chicken", price: "500", desc: "Tangy and spicy green-masala blend applied to tender chicken pieces.", images: ["https://images.unsplash.com/photo-1613292443284-8d10ef9383fe?auto=format&fit=crop&w=800&q=80"] },
+        { id: "n26", name: "Chicken Kophta Curry", price: "440", desc: "Delicate, hand-rolled chicken meatballs simmered in a rich, dark brown onion gravy.", images: ["https://images.unsplash.com/photo-1593560708920-61dd98c46a4e?auto=format&fit=crop&w=800&q=80"] }
+      ],
+      "Others": [
+        { id: "n27", name: "Chicken Kheema", price: "400", desc: "Spicy minced chicken cooked with green peas and served with buttered pav.", images: ["https://images.unsplash.com/photo-1626500155537-883777587788?auto=format&fit=crop&w=800&q=80"] },
+        { id: "n28", name: "Mutton Yakhni Pulav", price: "550", desc: "Subtle meat and rice preparation where grains are cooked in clarified meat stock.", images: ["https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=800&q=80"] },
+        { id: "n29", name: "Chicken Tev Pulav", price: "420", desc: "Spicy rice cooked with chicken and a unique blend of 'Tev' spices.", images: ["https://images.unsplash.com/photo-1633945274405-b6c8069047b0?auto=format&fit=crop&w=800&q=80"] },
+        { id: "n30", name: "Mutton Khichda", price: "480", desc: "A slow-cooked porridge of meat, lentils, and cracked wheat, enriched with ghee.", images: ["https://images.unsplash.com/photo-1505253149613-11b847673558?auto=format&fit=crop&w=800&q=80"] },
+        { id: "n31", name: "Chicken Pulao", price: "400", desc: "Lightly spiced basmati rice tossed with chicken chunks and whole spices.", images: ["https://images.unsplash.com/photo-1631515243349-e0cb75fb8d3a?auto=format&fit=crop&w=800&q=80"] }
+      ]
+    },
+    Dessert: {
+      "Traditional": [
+        { id: "n32", name: "Sevio ka Shola", price: "220", desc: "Vermicelli cooked in thickened milk, flavored with cardamom and topped with silver leaf.", images: ["https://images.unsplash.com/photo-1589113103553-5384496ff27b?auto=format&fit=crop&w=800&q=80"] },
+        { id: "n33", name: "Chawal ka Shola", price: "200", desc: "Rich rice pudding (Kheer) slow-reduced until it reaches a creamy consistency.", images: ["https://images.unsplash.com/photo-1596797038583-18a68a637311?auto=format&fit=crop&w=800&q=80"] },
+        { id: "n34", name: "Jarda", price: "180", desc: "Sweet, saffron-flavored rice cooked with sugar, ghee, almonds, cashews, and raisins.", images: ["https://images.unsplash.com/photo-1589302168068-964664d93dc0?auto=format&fit=crop&w=800&q=80"] },
+        { id: "n35", name: "Thuli", price: "160", desc: "Traditional cracked wheat dessert cooked with jaggery and ghee.", images: ["https://images.unsplash.com/photo-1621361019047-98319f390886?auto=format&fit=crop&w=800&q=80"] },
+        { id: "n36", name: "Dudhi Ka Halwa", price: "180", desc: "Fresh bottle gourd slow-cooked with whole milk and sugar.", images: ["https://images.unsplash.com/photo-1589113103553-5384496ff27b?auto=format&fit=crop&w=800&q=80"] },
+        { id: "n37", name: "Gajar Ka Halwa", price: "190", desc: "Seasonal red carrots slow-braised in milk and desi ghee.", images: ["https://images.unsplash.com/photo-1621361019047-98319f390886?auto=format&fit=crop&w=800&q=80"] },
+        { id: "n38", name: "Akhrot Ka Halwa", price: "250", desc: "An artisanal walnut paste halwa, slow-cooked to caramelized perfection.", images: ["https://images.unsplash.com/photo-1596797038583-18a68a637311?auto=format&fit=crop&w=800&q=80"] }
+      ]
+    }
   }
 };
 
 const Menu = () => {
-  const [activeSection, setActiveSection] = useState("Starter");
+  const [menuData, setMenuData] = useState(initialMenuData);
+  const [isVeg, setIsVeg] = useState(true); 
+
+  const currentMenu = isVeg ? menuData.veg : menuData.nonveg;
+
+  // IMPORTANT FIX: Initialize with the first key of the current menu ("Farsan" for Veg, "Starter" for Non-veg)
+  const [activeSection, setActiveSection] = useState(Object.keys(currentMenu)[0]);
+  
   const [expandedSubCat, setExpandedSubCat] = useState(null);
   const [expandedDish, setExpandedDish] = useState(null);
   const [dishCounts, setDishCounts] = useState({});
   const [addingId, setAddingId] = useState(null);
   const [showCartBar, setShowCartBar] = useState(false);
 
-  // NEW: State to track session cart for summary card
   const [cartItems, setCartItems] = useState([]);
 
-  // LOGIC: Modal States
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [selectedDishForDetails, setSelectedDishForDetails] = useState(null);
   const [orderDetails, setOrderDetails] = useState({
@@ -92,14 +151,12 @@ const Menu = () => {
   const container = useRef();
   const curtainRef = useRef();
   const cartBarRef = useRef();
-  const summaryCardRef = useRef(); // For the smooth GSAP flash
+  const summaryCardRef = useRef(); 
 
-  // Load existing selection on mount
   useEffect(() => {
     const data = JSON.parse(localStorage.getItem("ub_cart")) || [];
     setCartItems(data);
     
-    // If details already exist in cart, pre-set them for new items
     if (data.length > 0) {
         setOrderDetails({
             date: data[0].orderDate,
@@ -124,7 +181,6 @@ const Menu = () => {
     return Math.round((Number(basePrice) / 10) * count);
   };
 
-  // Logic: Only show modal if this is the first item in the session
   const handleAddToCartRequest = (dish, subCat) => {
     const user = JSON.parse(localStorage.getItem("user"));
     if (!user) return alert("Please login to add items!");
@@ -134,7 +190,6 @@ const Menu = () => {
     if (cartItems.length === 0) {
         setShowDetailsModal(true);
     } else {
-        // Logistics already set, add instantly
         finalizeAddToCart(dish, subCat);
     }
   };
@@ -143,7 +198,6 @@ const Menu = () => {
     const { date, time, phone } = orderDetails;
     if (!date || !time || !phone) return alert("Please fill all details!");
 
-    // Advance Logic Check (6 Hours)
     const now = new Date();
     const selectedDateTime = new Date(`${date}T${time}`);
     const sixHoursLater = new Date(now.getTime() + 6 * 60 * 60 * 1000);
@@ -152,7 +206,6 @@ const Menu = () => {
       return alert("Advance Notice Required: Orders must be placed at least 6 hours before delivery.");
     }
 
-    // Kitchen Hours Check (11:00 AM - 09:00 PM)
     const hours = parseInt(time.split(":")[0]);
     if (hours < 11 || hours >= 21) {
       return alert("Kitchen Hours: We only deliver between 11:00 AM and 9:00 PM.");
@@ -186,11 +239,12 @@ const Menu = () => {
       setAddingId(null);
       setShowCartBar(true);
       
-      // GSAP "Flash" Animation on Summary Card
-      gsap.fromTo(summaryCardRef.current, 
-        { backgroundColor: "#e3b94d", scale: 1.05 }, 
-        { backgroundColor: "white", scale: 1, duration: 1, ease: "power4.out" }
-      );
+      if(summaryCardRef.current) {
+        gsap.fromTo(summaryCardRef.current, 
+          { backgroundColor: "#e3b94d", scale: 1.05 }, 
+          { backgroundColor: "white", scale: 1, duration: 1, ease: "power4.out" }
+        );
+      }
 
       gsap.to(cartBarRef.current, {
         y: 0, opacity: 1, duration: 0.6, ease: "expo.out"
@@ -202,25 +256,49 @@ const Menu = () => {
     gsap.from(".menu-header h1", {
       y: 100, opacity: 0, duration: 1.2, delay: 1.2, ease: "power4.out"
     });
+    gsap.from(".type-toggle-container", {
+      opacity: 0, y: 20, delay: 1.4, duration: 0.8
+    });
     gsap.from(".section-nav", {
       opacity: 0, y: 20, delay: 1.6, duration: 0.8
     });
   }, { scope: container });
 
-  const handleSectionChange = (section) => {
-    if (section === activeSection) return;
+  const animateCurtainChange = (callback) => {
     const tl = gsap.timeline();
     tl.to(curtainRef.current, { scaleX: 1, duration: 0.5, ease: "power2.inOut" })
       .add(() => {
-        setActiveSection(section);
-        setExpandedSubCat(null);
-        setExpandedDish(null);
+        callback();
       })
       .set(curtainRef.current, { transformOrigin: "right" })
       .to(curtainRef.current, {
         scaleX: 0, duration: 0.5, ease: "power2.inOut",
         onComplete: () => gsap.set(curtainRef.current, { transformOrigin: "left" })
       });
+  };
+
+  const handleSectionChange = (section) => {
+    if (section === activeSection) return;
+    animateCurtainChange(() => {
+      setActiveSection(section);
+      setExpandedSubCat(null);
+      setExpandedDish(null);
+    });
+  };
+
+  const handleTypeToggle = (setToVeg) => {
+    if (isVeg === setToVeg) return;
+    animateCurtainChange(() => {
+      setIsVeg(setToVeg);
+      
+      // LOGIC UPDATE: When switching menus, safely grab the first category of the NEW menu.
+      // E.g., if switching to Veg, grab "Farsan". If Non-Veg, grab "Starter".
+      const newMenu = setToVeg ? menuData.veg : menuData.nonveg;
+      setActiveSection(Object.keys(newMenu)[0]);
+      
+      setExpandedSubCat(null);
+      setExpandedDish(null);
+    });
   };
 
   return (
@@ -230,8 +308,20 @@ const Menu = () => {
         <h1>THE MENU</h1>
       </header>
 
+      <div className="type-toggle-container">
+        <div className={`type-toggle ${!isVeg ? 'nonveg' : ''}`}>
+          <div className="toggle-slider"></div>
+          <div className={`toggle-btn ${isVeg ? 'active' : ''}`} onClick={() => handleTypeToggle(true)}>
+            PURE VEG
+          </div>
+          <div className={`toggle-btn ${!isVeg ? 'active' : ''}`} onClick={() => handleTypeToggle(false)}>
+            NON-VEG
+          </div>
+        </div>
+      </div>
+
       <nav className="section-nav">
-        {Object.keys(MENU_DATA).map((section) => (
+        {Object.keys(currentMenu).map((section) => (
           <button
             key={section}
             className={`section-btn ${activeSection === section ? "active" : ""}`}
@@ -246,7 +336,7 @@ const Menu = () => {
         <div className="menu-curtain" ref={curtainRef}></div>
 
         <div className="menu-content">
-          {Object.entries(MENU_DATA[activeSection]).map(([subCat, dishes]) => (
+          {Object.entries(currentMenu[activeSection]).map(([subCat, dishes]) => (
             <div key={subCat} className={`sub-cat-block ${expandedSubCat === subCat ? "is-open" : ""}`}>
               <div className="sub-cat-header" onClick={() => setExpandedSubCat(expandedSubCat === subCat ? null : subCat)}>
                 <h2>{subCat}</h2>
@@ -320,7 +410,6 @@ const Menu = () => {
         </div>
       </div>
 
-      {/* NEW: SELECTION SUMMARY CARD (End of Menu Section) */}
       {cartItems.length > 0 && (
           <div className="selection-summary-container">
               <div className="selection-card" ref={summaryCardRef}>
@@ -362,7 +451,6 @@ const Menu = () => {
           </div>
       )}
 
-      {/* MODAL OVERLAY: Logistics Input */}
       {showDetailsModal && (
         <div className="details-modal-overlay">
           <div className="details-modal">
@@ -392,7 +480,6 @@ const Menu = () => {
         </div>
       )}
 
-      {/* Floating Bottom Bar (Kept for instant confirmation) */}
       <div 
         className={`floating-cart-bar ${showCartBar ? 'visible' : ''}`} 
         ref={cartBarRef}

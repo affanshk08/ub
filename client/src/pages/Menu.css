@@ -9,12 +9,13 @@
 }
 
 .menu-page * {
-  box-sizing: border-box; /* Crucial global fix for this component to stop overflow */
+  box-sizing: border-box;
+  /* Crucial global fix for this component to stop overflow */
 }
 
 .menu-header {
   text-align: center;
-  margin-bottom: 60px;
+  margin-bottom: 40px;
 }
 
 .editorial-label {
@@ -33,6 +34,62 @@
   line-height: 0.8;
   color: #111;
   margin: 0;
+}
+
+/* --- VEG / NON-VEG TOGGLE --- */
+.type-toggle-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 60px;
+}
+
+.type-toggle {
+  position: relative;
+  width: 260px;
+  height: 54px;
+  background: #fff;
+  border: 2px solid #111;
+  border-radius: 40px;
+  display: flex;
+  cursor: pointer;
+  overflow: hidden;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.05);
+}
+
+.toggle-slider {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100%;
+  background: #27ae60;
+  /* Premium Emerald Green for Veg */
+  border-radius: 40px;
+  transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.type-toggle.nonveg .toggle-slider {
+  transform: translateX(100%);
+  background: #c0392b;
+  /* Premium Ruby Red for Non-Veg */
+}
+
+.toggle-btn {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  letter-spacing: 2px;
+  color: #111;
+  z-index: 2;
+  transition: color 0.4s;
+}
+
+.toggle-btn.active {
+  color: white;
 }
 
 /* --- 2. NAVIGATION & CATEGORIES --- */
@@ -298,7 +355,8 @@
   letter-spacing: 2px;
   cursor: pointer;
   transition: 0.3s;
-  width: 100%; /* Ensures consistent width */
+  width: 100%;
+  /* Ensures consistent width */
   text-align: center;
 }
 
@@ -318,16 +376,18 @@
 }
 
 @keyframes pulseLoader {
+
   0%,
   100% {
     opacity: 1;
   }
+
   50% {
     opacity: 0.4;
   }
 }
 
-/* --- 5. SELECTION SUMMARY CARD (NEW) --- */
+/* --- 5. SELECTION SUMMARY CARD --- */
 .selection-summary-container {
   padding: 100px 5%;
   background: #f6f4f1;
@@ -419,7 +479,7 @@
   display: block;
 }
 
-/* --- 6. DETAILS MODAL (NEW) --- */
+/* --- 6. DETAILS MODAL --- */
 .details-modal-overlay {
   position: fixed;
   top: 0;
@@ -441,8 +501,8 @@
   max-width: 500px;
   border-top: 6px solid #e3b94d;
   text-align: center;
-  max-height: 90vh; /* Prevents modal from getting taller than screen */
-  overflow-y: auto; /* Allows scrolling inside modal if needed on tiny screens */
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
 .details-modal h2 {
@@ -472,7 +532,7 @@
   border: 1px solid #ddd;
   font-family: 'Montserrat';
   background-color: #fff;
-  color: #111; /* Fixes text visibility */
+  color: #111;
 }
 
 .modal-input-group input::placeholder {
@@ -506,7 +566,7 @@
   font-size: 20px;
   cursor: pointer;
   transition: 0.3s;
-  color: #111; /* Explicitly set text color */
+  color: #111;
 }
 
 .confirm-btn:hover {
@@ -594,7 +654,7 @@
   font-size: 18px;
   text-decoration: none;
   transition: 0.3s;
-  display: inline-block; /* Fixes padding issues on anchor tags */
+  display: inline-block;
 }
 
 .go-to-cart-btn:hover {
@@ -662,13 +722,12 @@
     font-size: 22px;
   }
 
-  /* Selection Card Mobile */
   .selection-summary-container {
     padding: 60px 5%;
   }
 
   .selection-card {
-    padding: 30px 20px; /* Reduced padding for smaller screens */
+    padding: 30px 20px;
   }
 
   .logistics-grid {
@@ -688,7 +747,6 @@
     text-align: center;
   }
 
-  /* Modal Mobile */
   .details-modal {
     padding: 40px 20px;
   }
@@ -697,7 +755,6 @@
     flex-direction: column;
   }
 
-  /* Floating Bottom Bar Mobile */
   .bar-content {
     flex-direction: column;
     gap: 15px;
@@ -706,10 +763,10 @@
 
   .bar-actions {
     width: 100%;
-    flex-direction: column; /* Stacks buttons properly instead of squishing */
+    flex-direction: column;
     gap: 10px;
   }
-  
+
   .continue-btn {
     width: 100%;
   }
@@ -732,8 +789,8 @@
   .dish-main-row {
     padding: 20px 10px;
   }
-  
+
   .dish-price-wrap {
-    gap: 15px; /* Tighter gap so the text doesn't overlap on tiny screens */
+    gap: 15px;
   }
 }

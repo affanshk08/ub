@@ -73,7 +73,31 @@ const Home = () => {
       });
     }
 
-    // --- 4. EXPANDING MARQUEE LOGIC ---
+    // --- 4. HORIZONTAL SCROLL TEXT SECTION (FIXED FOR FULL WIDTH) ---
+    const horizontalWrapper = document.querySelector(".horizontal-scroll-wrapper");
+    if (horizontalWrapper) {
+      // Calculate exactly how far we need to move the wrapper, including its padding
+      const getScrollAmount = () => horizontalWrapper.scrollWidth - window.innerWidth;
+
+      const horizontalTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: ".horizontal-scroll-section",
+          start: "top top",
+          end: () => `+=${getScrollAmount()}`, 
+          pin: true,
+          scrub: 2,
+          invalidateOnRefresh: true
+        }
+      });
+
+      // Animate the wrapper instead of the text to respect the right padding
+      horizontalTl.to(".horizontal-scroll-wrapper", {
+        x: () => -getScrollAmount(),
+        ease: "none"
+      });
+    }
+
+    // --- 5. EXPANDING MARQUEE LOGIC ---
     const contactWrap = document.querySelector(".nav-wrap-left");
     const aboutWrap = document.querySelector(".nav-wrap-right");
     const startMarquee = (t) => gsap.to(t, { xPercent: -50, repeat: -1, duration: 12, ease: "none" });
@@ -170,7 +194,14 @@ const Home = () => {
         </div>
       </section>
 
-      {/* SECTION 04: ACTION NAV */}
+      {/* SECTION 04: HORIZONTAL SCROLL TEXT */}
+      <section className="horizontal-scroll-section">
+        <div className="horizontal-scroll-wrapper">
+          <h2 className="horizontal-text">STOP SCROLLING, TASTY FOOD IS IN MENU</h2>
+        </div>
+      </section>
+
+      {/* SECTION 05: ACTION NAV */}
       <section className="nav-expand-section">
         <div className="nav-wrap nav-wrap-left">
           <Link to="/contact" className="static-btn">CONTACT US</Link>
@@ -191,7 +222,6 @@ const Home = () => {
           </div>
         </div>
       </section>
-
 
     </div>
   );
