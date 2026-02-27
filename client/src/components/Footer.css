@@ -3,6 +3,12 @@
   background: #111;
   padding: 100px 5% 40px 5%;
   color: #f6f4f1;
+  box-sizing: border-box; /* Global sizing fix */
+}
+
+/* Ensure box-sizing applies to everything within the footer */
+.main-footer * {
+  box-sizing: border-box;
 }
 
 .footer-top {
@@ -19,32 +25,87 @@
   font-size: clamp(40px, 8vw, 70px);
   line-height: 0.9;
   margin-bottom: 20px;
+  margin-top: 0;
 }
 
-.text-gold { color: #e3b94d; }
+.text-gold { 
+  color: #e3b94d; 
+}
 
 .link-group h4 {
   font-family: "Bebas Neue", sans-serif;
   font-size: 18px;
   color: #e3b94d;
   margin-bottom: 25px;
+  margin-top: 0;
 }
 
-.link-group a, .link-group p {
+.link-group a, 
+.link-group p {
   display: block;
   font-family: "Montserrat", sans-serif;
   font-size: 13px;
   color: #aaa;
   text-decoration: none;
   margin-bottom: 12px;
+  transition: color 0.3s ease; /* Added smooth transition for links */
+}
+
+.link-group a:hover {
+  color: #f6f4f1; /* Added hover state for better UX */
 }
 
 .footer-bottom {
   padding-top: 40px;
   display: flex;
   justify-content: space-between;
+  align-items: center;
   font-family: "Montserrat", sans-serif;
   font-size: 10px;
   color: #444;
   text-transform: uppercase;
+}
+
+/* --- RESPONSIVENESS (Media Queries) --- */
+
+@media (max-width: 768px) {
+  .main-footer {
+    padding: 80px 5% 40px 5%; /* Reduced top padding slightly for mobile */
+  }
+
+  .footer-top {
+    flex-direction: column; /* Stacks the columns cleanly instead of awkward wrapping */
+    gap: 40px;
+    padding-bottom: 50px;
+  }
+
+  .link-group {
+    width: 100%;
+    text-align: center; /* Centers the links on mobile */
+  }
+
+  .footer-brand {
+    text-align: center;
+  }
+
+  .footer-bottom {
+    flex-direction: column; /* Stacks the copyright text */
+    gap: 15px;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer-brand h2 {
+    font-size: 45px;
+  }
+  
+  .link-group h4 {
+    font-size: 16px;
+  }
+  
+  .link-group a, 
+  .link-group p {
+    font-size: 12px;
+  }
 }

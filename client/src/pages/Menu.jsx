@@ -17,7 +17,7 @@ const MENU_DATA = {
     "Tangdi": [
       { id: 7, name: "Makhhan Mari Tangdi", price: "450", desc: "Succulent chicken drumsticks glazed with clarified butter (Makhhan) and a heavy dusting of cracked Tellicherry black pepper for a rich, spicy kick.", images: ["https://images.unsplash.com/photo-1527477396000-e27163b481c2?auto=format&fit=crop&w=800&q=80"] },
       { id: 8, name: "Irani Tangdi", price: "420", desc: "A heritage recipe featuring a marinade of pomegranate molasses and dried herbs, reflecting the historic Persian culinary influence on Surat's food culture.", images: ["https://images.unsplash.com/photo-1610057099443-fde8c4d50f91?auto=format&fit=crop&w=800&q=80"] },
-      { id: 9, name: "Schezwan Tangdi", price: "400", desc: "Jumbo drumsticks marinated overnight and finished in a high-flame wok with red chilies, garlic, and fermented bean paste.", images: ["https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?auto=format&fit=crop&w=800&q=80"] }
+      { id: 9, name: "Schezwan Tangdi", price: "1", desc: "Jumbo drumsticks marinated overnight and finished in a high-flame wok with red chilies, garlic, and fermented bean paste.", images: ["https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?auto=format&fit=crop&w=800&q=80"] }
     ],
     "Rolls & Others": [
       { id: 10, name: "Tiranga Roll", price: "350", desc: "A stunning visual and culinary treat. Three distinct layers of paneer, spinach, and carrot-infused mash rolled together and lightly fried.", images: ["https://images.unsplash.com/photo-1539252554454-31d626bd57b8?auto=format&fit=crop&w=800&q=80"] },

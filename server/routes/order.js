@@ -2,37 +2,29 @@ const express = require('express');
 const router = express.Router();
 const Order = require('../models/Order');
 
+// 1. PLACE AN ORDER (Used by Cart)
 router.post('/place', async (req, res) => {
   try {
-    const { userId, userName, dishName, category, personCount, totalPrice } = req.body;
+    const { 
+      userId, userName, dishName, category, personCount, 
+      totalPrice, orderDate, orderTime, phoneNumber, utrNumber 
+    } = req.body;
+    
     const newOrder = new Order({
       user: userId,
       userName,
       dishName,
       category,
       personCount,
-      totalPrice
+      totalPrice,
+      orderDate,
+      orderTime,
+      phoneNumber,
+      utrNumber
     });
+    
     await newOrder.save();
     res.status(201).json({ message: "Order placed!", order: newOrder });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// 1. PLACE AN ORDER (Used by User on Menu Page)
-router.post('/place', async (req, res) => {
-  try {
-    const { userId, userName, dishName, price, category } = req.body;
-    const newOrder = new Order({
-      user: userId,
-      userName,
-      dishName,
-      price,
-      category
-    });
-    await newOrder.save();
-    res.status(201).json({ message: "Order placed successfully!", order: newOrder });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -55,6 +47,35 @@ router.patch('/update/:id', async (req, res) => {
     const updatedOrder = await Order.findByIdAndUpdate(
       req.params.id,
       { cookingStatus, paymentStatus },
+      { new: true }
+    );
+    res.json(updatedOrder);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// 4. GET ALL ORDERS FOR A SPECIFIC USER (Used by Profile Page)
+// THIS WAS MISSING - IT IS REQUIRED TO SHOW ORDERS ON THE PROFILE!
+router.get('/user/:userId', async (req, res) => {
+  try {
+    const orders = await Order.find({ user: req.params.userId }).sort({ createdAt: -1 });
+    res.json(orders);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// 5. SUBMIT FEEDBACK (Used by Profile Page)
+router.post('/:id/feedback', async (req, res) => {
+  try {
+    const { rating, comment } = req.body;
+    const updatedOrder = await Order.findByIdAndUpdate(
+      req.params.id,
+      {
+        hasFeedback: true,
+        feedback: { rating, comment }
+      },
       { new: true }
     );
     res.json(updatedOrder);

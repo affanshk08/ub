@@ -5,6 +5,11 @@
   background-color: #f6f4f1;
   min-height: 100vh;
   padding: 160px 5% 100px;
+  box-sizing: border-box;
+}
+
+.menu-page * {
+  box-sizing: border-box; /* Crucial global fix for this component to stop overflow */
 }
 
 .menu-header {
@@ -27,6 +32,7 @@
   font-size: clamp(60px, 12vw, 150px);
   line-height: 0.8;
   color: #111;
+  margin: 0;
 }
 
 /* --- 2. NAVIGATION & CATEGORIES --- */
@@ -48,6 +54,7 @@
   color: #888;
   cursor: pointer;
   position: relative;
+  padding: 0 5px;
 }
 
 .section-btn.active {
@@ -82,6 +89,7 @@
   font-size: 44px;
   color: #111;
   letter-spacing: 2px;
+  margin: 0;
 }
 
 .dish-list-container {
@@ -290,6 +298,8 @@
   letter-spacing: 2px;
   cursor: pointer;
   transition: 0.3s;
+  width: 100%; /* Ensures consistent width */
+  text-align: center;
 }
 
 .add-btn:hover {
@@ -308,12 +318,10 @@
 }
 
 @keyframes pulseLoader {
-
   0%,
   100% {
     opacity: 1;
   }
-
   50% {
     opacity: 0.4;
   }
@@ -343,6 +351,7 @@
   font-size: 32px;
   letter-spacing: 2px;
   margin-top: 5px;
+  margin-bottom: 0;
   color: #111;
 }
 
@@ -370,6 +379,7 @@
   font-family: 'Bebas Neue';
   font-size: 20px;
   color: #111;
+  margin: 0;
 }
 
 .mini-item {
@@ -406,6 +416,7 @@
   font-family: 'Bebas Neue';
   font-size: 40px;
   color: #111;
+  display: block;
 }
 
 /* --- 6. DETAILS MODAL (NEW) --- */
@@ -430,12 +441,15 @@
   max-width: 500px;
   border-top: 6px solid #e3b94d;
   text-align: center;
+  max-height: 90vh; /* Prevents modal from getting taller than screen */
+  overflow-y: auto; /* Allows scrolling inside modal if needed on tiny screens */
 }
 
 .details-modal h2 {
   font-family: 'Bebas Neue';
   font-size: 44px;
   color: #111;
+  margin-top: 0;
 }
 
 .modal-input-group {
@@ -457,6 +471,12 @@
   padding: 16px;
   border: 1px solid #ddd;
   font-family: 'Montserrat';
+  background-color: #fff;
+  color: #111; /* Fixes text visibility */
+}
+
+.modal-input-group input::placeholder {
+  color: #aaa;
 }
 
 .modal-actions {
@@ -486,6 +506,7 @@
   font-size: 20px;
   cursor: pointer;
   transition: 0.3s;
+  color: #111; /* Explicitly set text color */
 }
 
 .confirm-btn:hover {
@@ -546,6 +567,7 @@
   font-family: 'Bebas Neue';
   font-size: 20px;
   letter-spacing: 2px;
+  margin: 0;
 }
 
 .bar-actions {
@@ -572,6 +594,7 @@
   font-size: 18px;
   text-decoration: none;
   transition: 0.3s;
+  display: inline-block; /* Fixes padding issues on anchor tags */
 }
 
 .go-to-cart-btn:hover {
@@ -639,11 +662,15 @@
     font-size: 22px;
   }
 
-  .add-btn {
-    width: 100%;
+  /* Selection Card Mobile */
+  .selection-summary-container {
+    padding: 60px 5%;
   }
 
-  /* Selection Card Mobile */
+  .selection-card {
+    padding: 30px 20px; /* Reduced padding for smaller screens */
+  }
+
   .logistics-grid {
     grid-template-columns: 1fr;
     gap: 15px;
@@ -670,6 +697,7 @@
     flex-direction: column;
   }
 
+  /* Floating Bottom Bar Mobile */
   .bar-content {
     flex-direction: column;
     gap: 15px;
@@ -677,6 +705,12 @@
   }
 
   .bar-actions {
+    width: 100%;
+    flex-direction: column; /* Stacks buttons properly instead of squishing */
+    gap: 10px;
+  }
+  
+  .continue-btn {
     width: 100%;
   }
 }
@@ -697,5 +731,9 @@
 
   .dish-main-row {
     padding: 20px 10px;
+  }
+  
+  .dish-price-wrap {
+    gap: 15px; /* Tighter gap so the text doesn't overlap on tiny screens */
   }
 }

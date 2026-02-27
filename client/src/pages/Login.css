@@ -2,12 +2,19 @@
   width: 100vw;
   height: 100vh;
   background: #f6f4f1;
-  display: grid;
-  place-items: center;
+  display: flex; /* Changed to flex for more reliable responsive centering */
+  justify-content: center;
+  align-items: center;
   position: relative;
   overflow: hidden;
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
+}
+
+/* Ensure box-sizing applies to everything within login for layout calculations */
+.login-screen * {
+  box-sizing: border-box;
 }
 
 .curtain-container {
@@ -36,6 +43,7 @@
   justify-content: center;
   z-index: 2;
   text-align: center;
+  padding: 0 5%; /* Added padding to prevent touching edges on mobile */
 }
 
 .login-heading {
@@ -59,7 +67,7 @@
   max-width: 550px;
   display: flex;
   flex-direction: column;
-  gap: 35px; /* Slightly tighter gap to fit the new link */
+  gap: 35px; 
   margin-top: 20px;
 }
 
@@ -77,18 +85,24 @@
   letter-spacing: 4px;
   color: #999;
   margin-bottom: 12px;
+  pointer-events: none; /* Good UX practice for static labels */
 }
 
 .input-wrapper input {
   width: 100%;
   background: transparent;
   border: none;
-  padding: 15px 0;
+  padding: 15px 10px; /* Added horizontal padding */
   font-family: "Montserrat", sans-serif;
   font-size: 22px;
   color: #111;
   outline: none;
   text-align: center;
+  border-radius: 0; /* Important for iOS to remove default styling */
+}
+
+.input-wrapper input::placeholder {
+  color: #888;
 }
 
 .input-wrapper .line {
@@ -99,7 +113,12 @@
 }
 
 .auth-btn {
-  width: 100%;
+  /* Fixing the shifting/responsiveness issues */
+  display: block; 
+  width: 100%; 
+  max-width: 100%; 
+  
+  /* Retaining existing style & animations */
   background: #111;
   color: #f6f4f1;
   border: none;
@@ -108,7 +127,7 @@
   font-size: 22px;
   letter-spacing: 4px;
   cursor: pointer;
-  margin-top: 10px;
+  margin: 10px auto 0;
   transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -135,4 +154,57 @@
 .switch-link:hover {
   opacity: 1;
   transform: translateY(-2px);
+}
+
+/* --- RESPONSIVENESS (Media Queries) --- */
+
+@media (max-width: 768px) {
+  .login-content {
+    padding: 0 20px;
+  }
+
+  .login-form {
+    gap: 25px; /* Tighter gap for tablet/mobile */
+  }
+
+  .input-wrapper input {
+    font-size: 18px; 
+    padding: 12px 10px;
+  }
+
+  .auth-btn {
+    padding: 18px;
+    font-size: 20px;
+    letter-spacing: 2px;
+  }
+
+  .auth-btn:hover {
+    letter-spacing: 5px; /* Reduced hover effect for mobile to prevent text wrap */
+  }
+}
+
+@media (max-width: 480px) {
+  .login-form {
+    gap: 20px;
+  }
+  
+  .input-wrapper label {
+    letter-spacing: 2px;
+    font-size: 10px;
+  }
+  
+  .input-wrapper input {
+    font-size: 16px;
+    padding: 10px 0;
+  }
+
+  .auth-btn {
+    padding: 15px;
+    font-size: 18px;
+    letter-spacing: 1px;
+  }
+
+  .auth-btn:hover {
+    letter-spacing: 3px;
+  }
 }

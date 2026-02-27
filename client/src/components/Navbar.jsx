@@ -10,6 +10,9 @@ const Navbar = () => {
   
   // Logic: State to track number of items in cart
   const [cartCount, setCartCount] = useState(0);
+  
+  // Logic: State to track mobile menu
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   // Logic: Update cart count whenever the page changes or storage updates
   useEffect(() => {
@@ -24,10 +27,19 @@ const Navbar = () => {
     return () => window.removeEventListener("storage", updateCount);
   }, [location]); // Re-run whenever user navigates to a new page
 
+  // Close mobile menu when navigating
+  useEffect(() => {
+    setIsMenuOpen(false);
+  }, [location]);
+
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     navigate("/login");
+  };
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
   };
 
   /* ---------- POWDER EFFECT ---------- */
@@ -116,50 +128,61 @@ const Navbar = () => {
           <img src={ketchupBottle} alt="ketchup bottle" />
         </span>
 
-        <div className="nav-links">
-          <Link to="/" className="nav-item">
+        {/* Hamburger Menu Button */}
+        <button 
+          className={`hamburger-btn ${isMenuOpen ? 'open' : ''}`} 
+          onClick={toggleMenu}
+          aria-label="Toggle menu"
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+
+        <div className={`nav-links ${isMenuOpen ? 'open' : ''}`}>
+          <Link to="/" className="nav-item" onClick={() => setIsMenuOpen(false)}>
             Home
             <span className="powder-layer" />
           </Link>
 
-          <Link to="/menu" className="nav-item">
+          <Link to="/menu" className="nav-item" onClick={() => setIsMenuOpen(false)}>
             Menu
             <span className="powder-layer" />
           </Link>
 
-          <Link to="/booking" className="nav-item">
+          <Link to="/booking" className="nav-item" onClick={() => setIsMenuOpen(false)}>
             Wedding Booking
             <span className="powder-layer" />
           </Link>
 
           {/* ADDED: Cart Link with Notification Dot */}
-          <Link to="/cart" className="nav-item cart-link">
+          <Link to="/cart" className="nav-item cart-link" onClick={() => setIsMenuOpen(false)}>
             Cart
             {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
             <span className="powder-layer" />
           </Link>
 
           {user && (
-            <Link to="/profile" className="nav-item">
+            <Link to="/profile" className="nav-item" onClick={() => setIsMenuOpen(false)}>
               Profile
               <span className="powder-layer" />
             </Link>
           )}
 
           {!user ? (
-            <Link to="/login" className="nav-item">
+            <Link to="/login" className="nav-item" onClick={() => setIsMenuOpen(false)}>
               Login
               <span className="powder-layer" />
             </Link>
           ) : (
-            <button className="nav-item logout-btn" onClick={handleLogout}>
+            <button className="nav-item logout-btn" onClick={() => { handleLogout(); setIsMenuOpen(false); }}>
               Logout
               <span className="powder-layer" />
             </button>
           )}
 
           {user && user.role === "admin" && (
-            <Link to="/admin" className="nav-item">
+            <Link to="/admin" className="nav-item" onClick={() => setIsMenuOpen(false)}>
               Admin
               <span className="powder-layer" />
             </Link>

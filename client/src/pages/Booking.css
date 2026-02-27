@@ -22,7 +22,6 @@
 .combos-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    /* Force 2 in a row */
     gap: 30px;
 }
 
@@ -30,7 +29,6 @@
     background: #fff;
     border: 1px solid rgba(0, 0, 0, 0.08);
     padding: 50px;
-    /* Spacious horizontal feel */
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -95,6 +93,22 @@
     color: #111;
 }
 
+/* --- MODAL OVERLAY (ADDED FOR BLURRED POPUP EFFECT) --- */
+.preview-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
 /* --- MODAL TRIPLE DISH LAYOUT --- */
 .preview-modal {
     background: #f6f4f1;
@@ -104,6 +118,7 @@
     max-height: 90vh;
     overflow-y: auto;
     position: relative;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
 }
 
 .modal-header {
@@ -114,7 +129,6 @@
 .combo-details-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    /* 3 separate items */
     gap: 25px;
     margin-bottom: 60px;
 }
@@ -187,8 +201,17 @@
 .input-group input {
     width: 100%;
     padding: 12px;
-    background: #fff;
+    background: #111;
     border: 1px solid #ddd;
+    box-sizing: border-box; /* Fixes input overflow issues */
+    color: #ffffff; /* Forces the typed text to be dark */
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+}
+
+/* Optional: This ensures the placeholder text is also visible but slightly faded */
+.input-group input::placeholder {
+    color: #888; 
 }
 
 .checkout-summary {
@@ -217,6 +240,12 @@
     font-family: 'Bebas Neue';
     font-size: 20px;
     cursor: pointer;
+    transition: 0.3s;
+}
+
+.add-to-selection-btn:hover {
+    background: #e3b94d;
+    color: #111;
 }
 
 .close-modal {
@@ -227,8 +256,17 @@
     border: none;
     font-size: 24px;
     cursor: pointer;
+    color: #111;
+    transition: 0.3s;
 }
 
+.close-modal:hover {
+    color: #e3b94d;
+}
+
+/* --- RESPONSIVENESS (Media Queries) --- */
+
+/* Tablets */
 @media (max-width: 1024px) {
     .combos-grid {
         grid-template-columns: 1fr;
@@ -240,5 +278,46 @@
 
     .booking-logistics-section {
         flex-direction: column;
+        gap: 30px;
+    }
+}
+
+/* Mobile Devices */
+@media (max-width: 768px) {
+    .booking-page {
+        padding: 120px 5% 60px;
+    }
+
+    .combo-card {
+        padding: 30px;
+    }
+
+    .combo-card h3 {
+        font-size: 32px;
+    }
+
+    .card-footer-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .preview-btn {
+        width: 100%;
+    }
+
+    .preview-modal {
+        padding: 40px 20px;
+        width: 100%;
+    }
+
+    .input-row {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .close-modal {
+        top: 10px;
+        right: 15px;
     }
 }

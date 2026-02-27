@@ -8,7 +8,7 @@ const UserSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
-    unique: true, // No two users can have the same email
+    unique: true, 
   },
   password: {
     type: String,
@@ -18,6 +18,15 @@ const UserSchema = new mongoose.Schema({
     type: String,
     enum: ['customer', 'admin'],
     default: 'customer',
+  },
+  // --- ADDED FIELDS FOR PROFILE ---
+  phone: {
+    type: String,
+    default: "",
+  },
+  profilePic: {
+    type: String,
+    default: "", // Stores base64 image string
   },
   createdAt: {
     type: Date,

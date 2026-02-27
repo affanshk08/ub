@@ -10,6 +10,8 @@ import Menu from './pages/Menu';
 import Booking from './pages/Booking';
 // Logic: Importing the Cart page
 import Cart from './pages/Cart';
+// Logic: Importing the new Profile page
+import Profile from './pages/Profile';
 // Logic: Importing the AdminDashboard from the folder we created
 import AdminDashboard from './pages/Admin/AdminDashboard'; 
 
@@ -35,9 +37,12 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/menu" element={<Menu />} />
-            {/* Logic: Added Route for the new Booking page */}
+            {/* Logic: Added Route for the Booking page */}
             <Route path="/booking" element={<Booking />} />
             <Route path="/cart" element={<Cart />} />
+            {/* Logic: Added Route for the new Profile page */}
+            <Route path="/profile" element={<Profile />} />
+            
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             
