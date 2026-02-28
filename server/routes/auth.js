@@ -7,7 +7,8 @@ const router = express.Router();
 // --- 1. SIGNUP ROUTE ---
 router.post('/signup', async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    // FIX: Destructure phone from the request body
+    const { name, email, phone, password } = req.body;
 
     // Check if user already exists
     let user = await User.findOne({ email });
@@ -19,10 +20,11 @@ router.post('/signup', async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // Create new user
+    // Create new user including the phone number
     user = new User({
       name,
       email,
+      phone, // FIX: Save phone to DB
       password: hashedPassword
     });
 
@@ -37,7 +39,8 @@ router.post('/signup', async (req, res) => {
 
     res.status(201).json({
       token,
-      user: { id: user._id, name: user.name, email: user.email, role: user.role }
+      // FIX: Return the phone number in the user object so frontend can store it
+      user: { id: user._id, name: user.name, email: user.email, phone: user.phone, role: user.role }
     });
 
   } catch (err) {
@@ -71,7 +74,8 @@ router.post('/login', async (req, res) => {
 
     res.json({
       token,
-      user: { id: user._id, name: user.name, email: user.email, role: user.role }
+      // FIX: Ensure phone is passed during login too
+      user: { id: user._id, name: user.name, email: user.email, phone: user.phone, role: user.role }
     });
 
   } catch (err) {

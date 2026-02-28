@@ -10,7 +10,6 @@
 
 .menu-page * {
   box-sizing: border-box;
-  /* Crucial global fix for this component to stop overflow */
 }
 
 .menu-header {
@@ -64,7 +63,6 @@
   width: 50%;
   height: 100%;
   background: #27ae60;
-  /* Premium Emerald Green for Veg */
   border-radius: 40px;
   transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
 }
@@ -72,7 +70,6 @@
 .type-toggle.nonveg .toggle-slider {
   transform: translateX(100%);
   background: #c0392b;
-  /* Premium Ruby Red for Non-Veg */
 }
 
 .toggle-btn {
@@ -292,6 +289,17 @@
   margin-bottom: 30px;
 }
 
+.per-person-cost {
+  display: inline-block;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  color: #e3b94d;
+  letter-spacing: 1px;
+  margin-top: 10px;
+  text-transform: uppercase;
+}
+
 /* --- 4. ITEM CONTROLS & ADD BTN --- */
 .item-controls {
   display: flex;
@@ -329,13 +337,31 @@
   flex-direction: column;
   align-items: center;
   padding: 0 20px;
-  min-width: 70px;
+  min-width: 80px;
 }
 
-.count-display .num {
-  font-family: 'Bebas Neue';
+.count-display input {
+  font-family: 'Bebas Neue', sans-serif;
   font-size: 24px;
   color: #111;
+  border: none;
+  width: 60px;
+  text-align: center;
+  background: transparent;
+  outline: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Hide arrows for number input */
+.count-display input::-webkit-outer-spin-button,
+.count-display input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.count-display input[type=number] {
+  -moz-appearance: textfield;
 }
 
 .count-display .label {
@@ -356,7 +382,6 @@
   cursor: pointer;
   transition: 0.3s;
   width: 100%;
-  /* Ensures consistent width */
   text-align: center;
 }
 
@@ -577,6 +602,105 @@
 .cancel-btn:hover {
   background: #111;
   color: white;
+}
+
+/* --- CUSTOM BRANDED ALERT MODAL --- */
+.custom-alert-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(5px);
+  z-index: 10000;
+  /* Extremely high z-index to appear above everything else */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: fadeInAlert 0.3s ease;
+}
+
+@keyframes fadeInAlert {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.custom-alert-box {
+  background: #f6f4f1;
+  padding: 40px;
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+  animation: slideUpAlert 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+@keyframes slideUpAlert {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.custom-alert-box.error {
+  border-top: 6px solid #c0392b;
+}
+
+.custom-alert-box.success {
+  border-top: 6px solid #e3b94d;
+}
+
+.custom-alert-box h3 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 32px;
+  color: #111;
+  margin: 0 0 15px 0;
+  letter-spacing: 1px;
+}
+
+.custom-alert-box.error h3 {
+  color: #c0392b;
+}
+
+.custom-alert-box.success h3 {
+  color: #e3b94d;
+}
+
+.custom-alert-box p {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  color: #444;
+  line-height: 1.6;
+  margin-bottom: 30px;
+}
+
+.custom-alert-btn {
+  background: #111;
+  color: #f6f4f1;
+  border: none;
+  padding: 12px 30px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: 0.3s;
+  width: 100%;
+}
+
+.custom-alert-btn:hover {
+  background: #e3b94d;
+  color: #111;
 }
 
 /* --- 7. MISC & CURTAIN --- */

@@ -521,12 +521,110 @@
     color: #111;
 }
 
+/* --- CUSTOM BRANDED ALERT MODAL --- */
+.custom-alert-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(5px);
+    z-index: 10000;
+    /* Must be higher than the checkout modal */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: fadeInAlert 0.3s ease;
+}
+
+@keyframes fadeInAlert {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.custom-alert-box {
+    background: #f6f4f1;
+    padding: 40px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+    animation: slideUpAlert 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+@keyframes slideUpAlert {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.custom-alert-box.error {
+    border-top: 6px solid #c0392b;
+}
+
+.custom-alert-box.success {
+    border-top: 6px solid #e3b94d;
+}
+
+.custom-alert-box h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    color: #111;
+    margin: 0 0 15px 0;
+    letter-spacing: 1px;
+}
+
+.custom-alert-box.error h3 {
+    color: #c0392b;
+}
+
+.custom-alert-box.success h3 {
+    color: #e3b94d;
+}
+
+.custom-alert-box p {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+    color: #444;
+    line-height: 1.6;
+    margin-bottom: 30px;
+}
+
+.custom-alert-btn {
+    background: #111;
+    color: #f6f4f1;
+    border: none;
+    padding: 12px 30px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: 0.3s;
+    width: 100%;
+}
+
+.custom-alert-btn:hover {
+    background: #e3b94d;
+    color: #111;
+}
+
 /* --- RESPONSIVENESS (Media Queries) --- */
 
 @media (max-width: 768px) {
     .cart-page {
         padding: 120px 5% 60px;
-        /* Reduced padding to fit screen better */
     }
 
     .cart-item {
@@ -576,7 +674,6 @@
 @media (max-width: 480px) {
     .cart-item {
         flex-direction: column;
-        /* Stacks image, details, and price vertically */
         text-align: center;
         gap: 15px;
         padding: 30px 0;

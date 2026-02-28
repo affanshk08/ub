@@ -11,6 +11,9 @@ const Cart = () => {
   const [address, setAddress] = useState({ houseNo: "", area: "", pincode: "", coords: null });
   const [paymentMethod, setPaymentMethod] = useState("online"); // 'online' | 'cod'
   
+  // Custom Alert State
+  const [customAlert, setCustomAlert] = useState(null); // { type: 'success' | 'error', message: string, onClose?: () => void }
+  
   const [utr, setUtr] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
@@ -43,8 +46,11 @@ const Cart = () => {
   const handleStartCheckout = () => {
     const user = JSON.parse(localStorage.getItem("user"));
     if (!user) {
-      alert("Please login to proceed with booking.");
-      navigate("/login");
+      setCustomAlert({ 
+        type: "error", 
+        message: "Please login to proceed with booking.",
+        onClose: () => navigate("/login") 
+      });
       return;
     }
     setCheckoutStep(1);
@@ -55,19 +61,20 @@ const Cart = () => {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           setAddress({ ...address, coords: { lat: position.coords.latitude, lng: position.coords.longitude } });
-          alert("📍 Map location pinned successfully!");
+          setCustomAlert({ type: "success", message: "📍 Map location pinned successfully!" });
         },
-        () => alert("Please allow location access in your browser to pin your map location.")
+        () => setCustomAlert({ type: "error", message: "Please allow location access in your browser to pin your map location." })
       );
     } else {
-      alert("Geolocation is not supported by your browser.");
+      setCustomAlert({ type: "error", message: "Geolocation is not supported by your browser." });
     }
   };
 
   const proceedToPayment = () => {
     if (deliveryType === "delivery") {
       if (!address.houseNo || !address.area || !address.pincode) {
-        return alert("Please fill in all address fields for delivery.");
+        setCustomAlert({ type: "error", message: "Please fill in all address fields for delivery." });
+        return;
       }
     }
     setCheckoutStep(2);
@@ -75,7 +82,8 @@ const Cart = () => {
 
   const submitOrder = async () => {
     if (paymentMethod === "online" && utr.length < 12) {
-      return alert("Please enter a valid 12-digit UTR/Transaction ID for online payment.");
+      setCustomAlert({ type: "error", message: "Please enter a valid 12-digit UTR/Transaction ID for online payment." });
+      return;
     }
 
     const user = JSON.parse(localStorage.getItem("user"));
@@ -88,50 +96,75 @@ const Cart = () => {
         ? `${address.houseNo}, ${address.area}, ${address.pincode} ${address.coords ? '(Map Pinned)' : ''}`
         : "Self-Pickup";
 
-      for (const item of cartItems) {
-        const res = await fetch("http://127.0.0.1:5000/api/orders/place", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            userId: userId,
-            userName: user.name,
-            dishName: item.name,
-            category: item.category,
-            personCount: item.personCount,
-            totalPrice: item.totalPrice,
-            orderDate: item.orderDate || new Date().toISOString().split("T")[0],
-            orderTime: item.orderTime || "12:00",
-            phoneNumber: item.phoneNumber || user.phone || "0000000000",
-            // NEW ADMIN-READY FIELDS
-            cgst: cgst,
-            sgst: sgst,
-            deliveryFee: deliveryCharge,
-            grandTotal: grandTotal,
-            deliveryType: deliveryType,
-            deliveryAddress: finalAddress,
-            paymentMethod: paymentMethod,
-            paymentStatus: paymentMethod === "cod" ? "Pending (COD)" : "Paid (Verification Pending)",
-            utrNumber: paymentMethod === "online" ? utr : "COD"
-          })
-        });
+      // COMBINED ORDER PAYLOAD
+      const orderPayload = {
+        userId: userId,
+        userName: user.name,
+        // Fallback for old schemas that expect a top-level string
+        dishName: "Combined Selection", 
+        category: "Multiple",
+        personCount: cartItems.reduce((acc, curr) => Math.max(acc, curr.personCount), 0), // Max persons
+        
+        // NEW: Array containing the exact items selected
+        items: cartItems.map(item => ({
+          dishId: item.dishId,
+          name: item.name,
+          category: item.category,
+          personCount: item.personCount,
+          price: item.totalPrice
+        })),
 
-        if (!res.ok) {
-          const errorData = await res.json();
-          throw new Error(errorData.error || "Failed to save order to database.");
-        }
+        totalPrice: subTotal, 
+        orderDate: cartItems[0]?.orderDate || new Date().toISOString().split("T")[0],
+        orderTime: cartItems[0]?.orderTime || "12:00",
+        phoneNumber: cartItems[0]?.phoneNumber || user.phone || "0000000000",
+        
+        // LOGISTICS & FINANCIALS
+        cgst: cgst,
+        sgst: sgst,
+        deliveryFee: deliveryCharge,
+        grandTotal: grandTotal,
+        deliveryType: deliveryType,
+        deliveryAddress: finalAddress,
+        paymentMethod: paymentMethod,
+        paymentStatus: paymentMethod === "cod" ? "Pending (COD)" : "Paid (Verification Pending)",
+        utrNumber: paymentMethod === "online" ? utr : "COD"
+      };
+
+      const res = await fetch("http://127.0.0.1:5000/api/orders/place", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(orderPayload)
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || "Failed to save order to database.");
       }
 
-      alert(paymentMethod === "online" ? "Payment submitted! Your order is pending verification." : "Order placed successfully! Please pay on delivery/pickup.");
-      localStorage.removeItem("ub_cart");
-      setCartItems([]);
-      setCheckoutStep(0);
-      navigate("/profile"); 
+      setCustomAlert({ 
+        type: "success", 
+        message: paymentMethod === "online" ? "Payment submitted! Your order is pending verification." : "Order placed successfully! Please pay on delivery/pickup.",
+        onClose: () => {
+          localStorage.removeItem("ub_cart");
+          setCartItems([]);
+          setCheckoutStep(0);
+          navigate("/profile"); 
+        }
+      });
     } catch (err) {
       console.error(err);
-      alert(`Error: ${err.message} \n\nPlease try emptying your cart and adding the items again.`);
+      setCustomAlert({ type: "error", message: `Error: ${err.message} \n\nPlease try emptying your cart and adding the items again.` });
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const closeCustomAlert = () => {
+    if (customAlert?.onClose) {
+      customAlert.onClose();
+    }
+    setCustomAlert(null);
   };
 
   return (
@@ -314,6 +347,20 @@ const Cart = () => {
           </div>
         </div>
       )}
+
+      {/* --- CUSTOM ALERT MODAL --- */}
+      {customAlert && (
+        <div className="custom-alert-overlay">
+          <div className={`custom-alert-box ${customAlert.type}`}>
+            <h3>{customAlert.type === "success" ? "SUCCESS" : "ATTENTION"}</h3>
+            <p>{customAlert.message}</p>
+            <button className="custom-alert-btn" onClick={closeCustomAlert}>
+              ACKNOWLEDGE
+            </button>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };

@@ -55,6 +55,10 @@ const Booking = () => {
   const [selectedCombo, setSelectedCombo] = useState(null);
   const [personCount, setPersonCount] = useState(100);
   const [orderDetails, setOrderDetails] = useState({ date: "", time: "", phone: "" });
+  
+  // Custom Alert State
+  const [customAlert, setCustomAlert] = useState(null); // { type: 'success' | 'error', message: string }
+
   const container = useRef();
 
   useGSAP(() => {
@@ -64,17 +68,27 @@ const Booking = () => {
 
   const validateAndAdd = () => {
     const user = JSON.parse(localStorage.getItem("user"));
-    if (!user) return alert("Please login to proceed.");
+    if (!user) {
+      setCustomAlert({ type: "error", message: "Please login to proceed." });
+      return;
+    }
     
     const { date, time, phone } = orderDetails;
-    if (!date || !time || !phone) return alert("Please fill all logistics details!");
+    if (!date || !time || !phone) {
+      setCustomAlert({ type: "error", message: "Please fill all logistics details!" });
+      return;
+    }
 
     const now = new Date();
     const selectedDateTime = new Date(`${date}T${time}`);
     const fortyEightHoursLater = new Date(now.getTime() + 48 * 60 * 60 * 1000);
 
     if (selectedDateTime < fortyEightHoursLater) {
-      return alert("Advance Notice Required: Wedding orders must be placed at least 48 hours (2 days) in advance.");
+      setCustomAlert({ 
+        type: "error", 
+        message: "Advance Notice Required: Wedding orders must be placed at least 48 hours (2 days) in advance." 
+      });
+      return;
     }
 
     const cartItem = {
@@ -83,7 +97,7 @@ const Booking = () => {
       category: "Wedding Combo",
       personCount,
       totalPrice: (selectedCombo.price * personCount),
-      image: selectedCombo.items[0].image, // Using first dish image for cart display
+      image: selectedCombo.items[0].image, 
       orderDate: date,
       orderTime: time,
       phoneNumber: phone
@@ -91,7 +105,8 @@ const Booking = () => {
 
     const cart = JSON.parse(localStorage.getItem("ub_cart")) || [];
     localStorage.setItem("ub_cart", JSON.stringify([...cart, cartItem]));
-    alert("Wedding Package added to selection!");
+    
+    setCustomAlert({ type: "success", message: "Wedding Package successfully added to your selection!" });
     setSelectedCombo(null);
   };
 
@@ -122,6 +137,7 @@ const Booking = () => {
         ))}
       </div>
 
+      {/* --- PREVIEW MODAL --- */}
       {selectedCombo && (
         <div className="preview-modal-overlay">
           <div className="preview-modal">
@@ -180,6 +196,19 @@ const Booking = () => {
                 </button>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* --- CUSTOM ALERT MODAL --- */}
+      {customAlert && (
+        <div className="custom-alert-overlay">
+          <div className={`custom-alert-box ${customAlert.type}`}>
+            <h3>{customAlert.type === "success" ? "SUCCESS" : "ATTENTION"}</h3>
+            <p>{customAlert.message}</p>
+            <button className="custom-alert-btn" onClick={() => setCustomAlert(null)}>
+              ACKNOWLEDGE
+            </button>
           </div>
         </div>
       )}

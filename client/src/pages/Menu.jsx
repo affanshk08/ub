@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { useNavigate, Link } from "react-router-dom"; 
+import { useNavigate, Link } from "react-router-dom";
 import "./Menu.css";
 
 // 1. CRUD-Ready Backend Structure
@@ -124,18 +124,20 @@ const initialMenuData = {
 
 const Menu = () => {
   const [menuData, setMenuData] = useState(initialMenuData);
-  const [isVeg, setIsVeg] = useState(true); 
+  const [isVeg, setIsVeg] = useState(true);
 
   const currentMenu = isVeg ? menuData.veg : menuData.nonveg;
 
-  // IMPORTANT FIX: Initialize with the first key of the current menu ("Farsan" for Veg, "Starter" for Non-veg)
   const [activeSection, setActiveSection] = useState(Object.keys(currentMenu)[0]);
-  
+
   const [expandedSubCat, setExpandedSubCat] = useState(null);
   const [expandedDish, setExpandedDish] = useState(null);
   const [dishCounts, setDishCounts] = useState({});
   const [addingId, setAddingId] = useState(null);
   const [showCartBar, setShowCartBar] = useState(false);
+
+  // Custom Alert State
+  const [customAlert, setCustomAlert] = useState(null);
 
   const [cartItems, setCartItems] = useState([]);
 
@@ -147,68 +149,112 @@ const Menu = () => {
     phone: ""
   });
 
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
   const container = useRef();
   const curtainRef = useRef();
   const cartBarRef = useRef();
-  const summaryCardRef = useRef(); 
+  const summaryCardRef = useRef();
 
   useEffect(() => {
     const data = JSON.parse(localStorage.getItem("ub_cart")) || [];
     setCartItems(data);
-    
+
     if (data.length > 0) {
-        setOrderDetails({
-            date: data[0].orderDate,
-            time: data[0].orderTime,
-            phone: data[0].phoneNumber
-        });
+      setOrderDetails({
+        date: data[0].orderDate,
+        time: data[0].orderTime,
+        phone: data[0].phoneNumber
+      });
     }
   }, []);
 
-  const getCount = (id) => dishCounts[id] || 10;
+  const getCount = (id) => {
+    return dishCounts[id] !== undefined ? dishCounts[id] : 10;
+  };
+
   const getTodayDate = () => new Date().toISOString().split('T')[0];
 
   const updateCount = (id, delta) => {
     setDishCounts(prev => {
-      const current = prev[id] || 10;
+      const current = prev[id] === "" ? 10 : parseInt(prev[id], 10) || 10;
       const next = Math.max(10, Math.min(5000, current + delta));
       return { ...prev, [id]: next };
     });
   };
 
+  const handleManualCountChange = (id, value) => {
+    const val = value === "" ? "" : parseInt(value, 10);
+    setDishCounts(prev => ({ ...prev, [id]: val }));
+  };
+
+  const handleCountBlur = (id) => {
+    setDishCounts(prev => {
+      const current = prev[id];
+      if (current === "" || current < 10 || isNaN(current)) return { ...prev, [id]: 10 };
+      if (current > 5000) return { ...prev, [id]: 5000 };
+      return prev;
+    });
+  };
+
   const calculatePrice = (basePrice, count) => {
-    return Math.round((Number(basePrice) / 10) * count);
+    const validCount = parseInt(count) || 0;
+    return Math.round((Number(basePrice) / 10) * validCount);
+  };
+
+  const closeCustomAlert = () => {
+    if (customAlert?.onClose) {
+      customAlert.onClose();
+    }
+    setCustomAlert(null);
   };
 
   const handleAddToCartRequest = (dish, subCat) => {
     const user = JSON.parse(localStorage.getItem("user"));
-    if (!user) return alert("Please login to add items!");
+    if (!user) {
+      setCustomAlert({
+        type: "error",
+        message: "Please login to add items!",
+        onClose: () => navigate("/login")
+      });
+      return;
+    }
+
+    const finalCount = getCount(dish.id) === "" ? 10 : getCount(dish.id);
+    if (finalCount < 10) {
+      updateCount(dish.id, 0);
+      setCustomAlert({ type: "error", message: "Minimum order must be for 10 persons." });
+      return;
+    }
 
     setSelectedDishForDetails({ ...dish, subCat });
 
     if (cartItems.length === 0) {
-        setShowDetailsModal(true);
+      setShowDetailsModal(true);
     } else {
-        finalizeAddToCart(dish, subCat);
+      finalizeAddToCart(dish, subCat);
     }
   };
 
   const validateAndAdd = () => {
     const { date, time, phone } = orderDetails;
-    if (!date || !time || !phone) return alert("Please fill all details!");
+    if (!date || !time || !phone) {
+      setCustomAlert({ type: "error", message: "Please fill all details!" });
+      return;
+    }
 
     const now = new Date();
     const selectedDateTime = new Date(`${date}T${time}`);
     const sixHoursLater = new Date(now.getTime() + 6 * 60 * 60 * 1000);
 
     if (selectedDateTime < sixHoursLater) {
-      return alert("Advance Notice Required: Orders must be placed at least 6 hours before delivery.");
+      setCustomAlert({ type: "error", message: "Advance Notice Required: Orders must be placed at least 6 hours before delivery." });
+      return;
     }
 
     const hours = parseInt(time.split(":")[0]);
     if (hours < 11 || hours >= 21) {
-      return alert("Kitchen Hours: We only deliver between 11:00 AM and 9:00 PM.");
+      setCustomAlert({ type: "error", message: "Kitchen Hours: We only deliver between 11:00 AM and 9:00 PM." });
+      return;
     }
 
     setShowDetailsModal(false);
@@ -217,8 +263,9 @@ const Menu = () => {
 
   const finalizeAddToCart = (dish, subCat) => {
     setAddingId(dish.id);
-    const count = getCount(dish.id);
-    
+
+    const count = getCount(dish.id) === "" ? 10 : getCount(dish.id);
+
     const cartItem = {
       dishId: dish.id,
       name: dish.name,
@@ -234,14 +281,14 @@ const Menu = () => {
     const updatedCart = [...cartItems, cartItem];
     localStorage.setItem("ub_cart", JSON.stringify(updatedCart));
     setCartItems(updatedCart);
-    
+
     setTimeout(() => {
       setAddingId(null);
       setShowCartBar(true);
-      
-      if(summaryCardRef.current) {
-        gsap.fromTo(summaryCardRef.current, 
-          { backgroundColor: "#e3b94d", scale: 1.05 }, 
+
+      if (summaryCardRef.current) {
+        gsap.fromTo(summaryCardRef.current,
+          { backgroundColor: "#e3b94d", scale: 1.05 },
           { backgroundColor: "white", scale: 1, duration: 1, ease: "power4.out" }
         );
       }
@@ -290,12 +337,9 @@ const Menu = () => {
     if (isVeg === setToVeg) return;
     animateCurtainChange(() => {
       setIsVeg(setToVeg);
-      
-      // LOGIC UPDATE: When switching menus, safely grab the first category of the NEW menu.
-      // E.g., if switching to Veg, grab "Farsan". If Non-Veg, grab "Starter".
       const newMenu = setToVeg ? menuData.veg : menuData.nonveg;
       setActiveSection(Object.keys(newMenu)[0]);
-      
+
       setExpandedSubCat(null);
       setExpandedDish(null);
     });
@@ -374,29 +418,38 @@ const Menu = () => {
                             </div>
                             <div className="slider-hint">SCROLL TO EXPLORE →</div>
                           </div>
-                          
+
                           <div className="text-content">
-                            <p className="detailed-desc">{dish.desc}</p>
+                            <p className="detailed-desc">
+                              {dish.desc}
+                              <br />
+                              <span className="per-person-cost">₹{Math.round(dish.price / 10)} PER PERSON</span>
+                            </p>
                             <div className="item-controls">
-                                <div className="dish-person-counter">
-                                    <button onClick={() => updateCount(dish.id, -10)}>-</button>
-                                    <div className="count-display">
-                                        <span className="num">{currentCount}</span>
-                                        <span className="label">PERS.</span>
-                                    </div>
-                                    <button onClick={() => updateCount(dish.id, 10)}>+</button>
+                              <div className="dish-person-counter">
+                                <button onClick={() => updateCount(dish.id, -10)}>-</button>
+                                <div className="count-display">
+                                  <input
+                                    type="number"
+                                    value={currentCount}
+                                    onChange={(e) => handleManualCountChange(dish.id, e.target.value)}
+                                    onBlur={() => handleCountBlur(dish.id)}
+                                  />
+                                  <span className="label">PERS.</span>
                                 </div>
-                                <button 
-                                  className={`add-btn ${addingId === dish.id ? 'is-loading' : ''}`} 
-                                  onClick={() => handleAddToCartRequest(dish, subCat)}
-                                  disabled={addingId === dish.id}
-                                >
-                                  {addingId === dish.id ? (
-                                    <span className="loader-text">PREPARING...</span>
-                                  ) : (
-                                    "ADD TO SELECTION"
-                                  )}
-                                </button>
+                                <button onClick={() => updateCount(dish.id, 10)}>+</button>
+                              </div>
+                              <button
+                                className={`add-btn ${addingId === dish.id ? 'is-loading' : ''}`}
+                                onClick={() => handleAddToCartRequest(dish, subCat)}
+                                disabled={addingId === dish.id}
+                              >
+                                {addingId === dish.id ? (
+                                  <span className="loader-text">PREPARING...</span>
+                                ) : (
+                                  "ADD TO SELECTION"
+                                )}
+                              </button>
                             </div>
                           </div>
                         </div>
@@ -411,65 +464,65 @@ const Menu = () => {
       </div>
 
       {cartItems.length > 0 && (
-          <div className="selection-summary-container">
-              <div className="selection-card" ref={summaryCardRef}>
-                  <div className="card-top">
-                      <p className="editorial-label">SESSION OVERVIEW</p>
-                      <h3>YOUR SELECTION</h3>
-                  </div>
-                  <div className="logistics-grid">
-                      <div className="log-item">
-                          <label>DELIVERY DATE</label>
-                          <p>{cartItems[0].orderDate}</p>
-                      </div>
-                      <div className="log-item">
-                          <label>DELIVERY TIME</label>
-                          <p>{cartItems[0].orderTime}</p>
-                      </div>
-                      <div className="log-item">
-                          <label>CONTACT PHONE</label>
-                          <p>{cartItems[0].phoneNumber}</p>
-                      </div>
-                  </div>
-                  <div className="mini-item-list">
-                      {cartItems.map((item, index) => (
-                          <div key={index} className="mini-item">
-                              <span>{item.name}</span>
-                              <span className="dot-line"></span>
-                              <span>₹{item.totalPrice}</span>
-                          </div>
-                      ))}
-                  </div>
-                  <div className="card-footer">
-                      <div className="total-stack">
-                          <label>SUBTOTAL</label>
-                          <span className="price-total">₹{cartItems.reduce((acc, curr) => acc + curr.totalPrice, 0)}</span>
-                      </div>
-                      <Link to="/cart" className="go-to-cart-btn">PROCEED TO BASKET</Link>
-                  </div>
+        <div className="selection-summary-container">
+          <div className="selection-card" ref={summaryCardRef}>
+            <div className="card-top">
+              <p className="editorial-label">SESSION OVERVIEW</p>
+              <h3>YOUR SELECTION</h3>
+            </div>
+            <div className="logistics-grid">
+              <div className="log-item">
+                <label>DELIVERY DATE</label>
+                <p>{cartItems[0].orderDate}</p>
               </div>
+              <div className="log-item">
+                <label>DELIVERY TIME</label>
+                <p>{cartItems[0].orderTime}</p>
+              </div>
+              <div className="log-item">
+                <label>CONTACT PHONE</label>
+                <p>{cartItems[0].phoneNumber}</p>
+              </div>
+            </div>
+            <div className="mini-item-list">
+              {cartItems.map((item, index) => (
+                <div key={index} className="mini-item">
+                  <span>{item.name}</span>
+                  <span className="dot-line"></span>
+                  <span>₹{item.totalPrice}</span>
+                </div>
+              ))}
+            </div>
+            <div className="card-footer">
+              <div className="total-stack">
+                <label>SUBTOTAL</label>
+                <span className="price-total">₹{cartItems.reduce((acc, curr) => acc + curr.totalPrice, 0)}</span>
+              </div>
+              <Link to="/cart" className="go-to-cart-btn">PROCEED TO BASKET</Link>
+            </div>
           </div>
+        </div>
       )}
 
       {showDetailsModal && (
         <div className="details-modal-overlay">
           <div className="details-modal">
             <h2>LOGISTICS</h2>
-            <p style={{fontFamily: 'Montserrat', fontSize: '10px', letterSpacing: '2px', color: '#e3b94d', marginBottom: '30px'}}>UNIFIED SELECTION DETAILS</p>
-            
+            <p style={{ fontFamily: 'Montserrat', fontSize: '10px', letterSpacing: '2px', color: '#e3b94d', marginBottom: '30px' }}>UNIFIED SELECTION DETAILS</p>
+
             <div className="modal-input-group">
               <label>DATE</label>
-              <input type="date" min={getTodayDate()} onChange={(e) => setOrderDetails({...orderDetails, date: e.target.value})} />
+              <input type="date" min={getTodayDate()} onChange={(e) => setOrderDetails({ ...orderDetails, date: e.target.value })} />
             </div>
 
             <div className="modal-input-group">
               <label>TIME (11 AM - 9 PM)</label>
-              <input type="time" onChange={(e) => setOrderDetails({...orderDetails, time: e.target.value})} />
+              <input type="time" onChange={(e) => setOrderDetails({ ...orderDetails, time: e.target.value })} />
             </div>
 
             <div className="modal-input-group">
-                <label>PHONE</label>
-                <input type="tel" placeholder="10-digit mobile" onChange={(e) => setOrderDetails({...orderDetails, phone: e.target.value})} />
+              <label>PHONE</label>
+              <input type="tel" placeholder="10-digit mobile" onChange={(e) => setOrderDetails({ ...orderDetails, phone: e.target.value })} />
             </div>
 
             <div className="modal-actions">
@@ -480,8 +533,8 @@ const Menu = () => {
         </div>
       )}
 
-      <div 
-        className={`floating-cart-bar ${showCartBar ? 'visible' : ''}`} 
+      <div
+        className={`floating-cart-bar ${showCartBar ? 'visible' : ''}`}
         ref={cartBarRef}
       >
         <div className="bar-content">
@@ -496,6 +549,20 @@ const Menu = () => {
       <footer className="menu-policy-note">
         <p>ARTISANAL QUALITY | MIN 10 PERSONS | MAX ORDER ₹5,000</p>
       </footer>
+
+      {/* --- CUSTOM BRANDED ALERT MODAL --- */}
+      {customAlert && (
+        <div className="custom-alert-overlay">
+          <div className={`custom-alert-box ${customAlert.type}`}>
+            <h3>{customAlert.type === "success" ? "SUCCESS" : "ATTENTION"}</h3>
+            <p>{customAlert.message}</p>
+            <button className="custom-alert-btn" onClick={closeCustomAlert}>
+              ACKNOWLEDGE
+            </button>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };

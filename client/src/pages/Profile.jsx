@@ -1,18 +1,17 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import "./Profile.css";
 
 const Profile = () => {
   const container = useRef();
-  const curtainRef = useRef();
   const navigate = useNavigate();
 
   // --- STATE ---
   const [user, setUser] = useState(() => JSON.parse(localStorage.getItem("user")));
   const [orders, setOrders] = useState([]);
-  const [isEditing, setIsEditing] = useState(false);
+  const [activeTab, setActiveTab] = useState("history"); // 'history' | 'settings'
   
   const [editFormData, setEditFormData] = useState({ 
     name: user?.name || "", 
@@ -20,11 +19,15 @@ const Profile = () => {
     phone: user?.phone || "", 
     profilePic: user?.profilePic || "" 
   });
+  const [isSaving, setIsSaving] = useState(false);
   
-  // Feedback Modal State
+  // Modals & Alerts State
   const [feedbackModalOpen, setFeedbackModalOpen] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState(null);
   const [feedbackData, setFeedbackData] = useState({ rating: 5, comment: "" });
+  
+  const [customAlert, setCustomAlert] = useState(null); // { type: 'success'|'error', message: string, onClose?: function }
+  const [confirmModal, setConfirmModal] = useState(null); // { message: string, onConfirm: function }
 
   // --- LOAD DATA & PROTECT ROUTE ---
   useEffect(() => {
@@ -35,10 +38,8 @@ const Profile = () => {
       return;
     }
 
-    // Safely extract the user ID
     const userId = user._id || user.id;
 
-    // Fetch user's order history from backend
     fetch(`http://127.0.0.1:5000/api/orders/user/${userId}`, {
       headers: { "Authorization": `Bearer ${token}` }
     })
@@ -51,18 +52,14 @@ const Profile = () => {
 
   // --- GSAP ANIMATIONS ---
   useGSAP(() => {
-    const tl = gsap.timeline();
-
-    // Curtain reveal
-    tl.to(curtainRef.current, { scaleX: 0, duration: 0.8, ease: "power3.inOut", transformOrigin: "right" })
-      .from(".profile-header h1", { y: 100, opacity: 0, duration: 0.8, ease: "power4.out" }, "-=0.2")
-      .from(".profile-card", { y: 40, opacity: 0, duration: 0.6, ease: "power2.out" }, "-=0.4")
-      .from(".order-card", { y: 30, opacity: 0, stagger: 0.1, duration: 0.6, ease: "power2.out" }, "-=0.4");
+    gsap.from(".profile-sidebar", { x: -30, opacity: 0, duration: 0.6, ease: "power2.out" });
+    gsap.from(".profile-main", { y: 30, opacity: 0, duration: 0.6, ease: "power2.out", delay: 0.2 });
   }, { scope: container });
 
   // --- HANDLERS ---
   const handleProfileUpdate = async (e) => {
     e.preventDefault();
+    setIsSaving(true);
     const token = localStorage.getItem("token");
     
     try {
@@ -79,13 +76,15 @@ const Profile = () => {
       if(res.ok) {
         setUser(updatedUser);
         localStorage.setItem("user", JSON.stringify(updatedUser));
-        setIsEditing(false);
-        alert("Profile updated successfully!");
+        setCustomAlert({ type: "success", message: "Profile updated successfully!" });
       } else {
-        alert(updatedUser.message || "Failed to update profile");
+        setCustomAlert({ type: "error", message: updatedUser.message || "Failed to update profile." });
       }
     } catch (err) {
       console.error(err);
+      setCustomAlert({ type: "error", message: "A network error occurred while updating." });
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -98,6 +97,17 @@ const Profile = () => {
       };
       reader.readAsDataURL(file);
     }
+  };
+
+  const handleLogoutRequest = () => {
+    setConfirmModal({
+      message: "Are you sure you want to log out?",
+      onConfirm: () => {
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+        navigate("/login");
+      }
+    });
   };
 
   const submitFeedback = async () => {
@@ -113,124 +123,199 @@ const Profile = () => {
       });
       
       if(res.ok) {
-        alert("Thank you for your feedback!");
         setFeedbackModalOpen(false);
+        setCustomAlert({ type: "success", message: "Thank you for your feedback! It helps us improve." });
         setFeedbackData({ rating: 5, comment: "" });
         
-        // Update local orders state to remove the feedback button
         setOrders(orders.map(order => 
           order._id === selectedOrderId 
             ? { ...order, hasFeedback: true, feedback: feedbackData } 
             : order
         ));
       } else {
-        alert("Something went wrong. Please try again.");
+        setCustomAlert({ type: "error", message: "Something went wrong while submitting feedback. Please try again." });
       }
     } catch (err) {
       console.error(err);
+      setCustomAlert({ type: "error", message: "Network error occurred." });
     }
   };
 
-  // Prevent rendering if redirecting
-  if (!user) return <div className="profile-page" style={{ background: '#111', height: '100vh' }}></div>;
+  if (!user) return null;
 
   return (
-    <div className="profile-page" ref={container}>
-      <div className="page-curtain" ref={curtainRef}></div>
+    <div className="profile-page-wrapper" ref={container}>
       
       <header className="profile-header">
-        <p className="editorial-label">PERSONAL DASHBOARD</p>
-        <h1>YOUR PROFILE</h1>
+        <h1>MY ACCOUNT</h1>
       </header>
 
-      <div className="profile-grid">
-        {/* --- LEFT: PROFILE CARD --- */}
-        <div className="profile-card">
-          <div className="avatar-section">
-            <div className="avatar-circle">
-              {editFormData.profilePic || user.profilePic ? (
-                <img src={isEditing ? editFormData.profilePic : user.profilePic} alt="Profile" />
-              ) : (
-                <span className="initial">{user.name.charAt(0).toUpperCase()}</span>
-              )}
-            </div>
-            {isEditing && (
-              <div className="upload-btn-wrapper">
-                <button className="change-pic-btn">CHANGE PICTURE</button>
-                <input type="file" accept="image/*" onChange={handleImageUpload} />
+      <div className="profile-layout">
+        
+        {/* --- SIDEBAR --- */}
+        <aside className="profile-sidebar">
+          <div className="sidebar-user-info">
+            <div className="avatar-wrapper">
+              <div className="avatar-circle">
+                {editFormData.profilePic || user.profilePic ? (
+                  <img src={editFormData.profilePic || user.profilePic} alt="Profile" />
+                ) : (
+                  <span className="initial">{user.name.charAt(0).toUpperCase()}</span>
+                )}
               </div>
-            )}
+              <div className="upload-btn-overlay">
+                 <input type="file" accept="image/*" onChange={handleImageUpload} title="Change Profile Picture" />
+                 <span>✎ Edit</span>
+              </div>
+            </div>
+            <h3>{user.name}</h3>
+            <p>{user.email}</p>
           </div>
 
-          {!isEditing ? (
-            <div className="user-info-display">
-              <h2>{user.name}</h2>
-              <p className="info-row"><span className="label">EMAIL</span> {user.email}</p>
-              <p className="info-row"><span className="label">PHONE</span> {user.phone || "Not Provided"}</p>
-              <button className="action-btn" onClick={() => setIsEditing(true)}>EDIT PROFILE</button>
-            </div>
-          ) : (
-            <form className="user-info-form" onSubmit={handleProfileUpdate}>
-              <div className="input-group">
-                <label>FULL NAME</label>
-                <input type="text" value={editFormData.name} onChange={e => setEditFormData({...editFormData, name: e.target.value})} required />
-              </div>
-              <div className="input-group">
-                <label>EMAIL</label>
-                <input type="email" value={editFormData.email} onChange={e => setEditFormData({...editFormData, email: e.target.value})} required />
-              </div>
-              <div className="input-group">
-                <label>PHONE</label>
-                <input type="tel" value={editFormData.phone} onChange={e => setEditFormData({...editFormData, phone: e.target.value})} />
-              </div>
-              <div className="form-actions">
-                <button type="button" className="cancel-btn" onClick={() => setIsEditing(false)}>CANCEL</button>
-                <button type="submit" className="save-btn">SAVE CHANGES</button>
-              </div>
-            </form>
-          )}
-        </div>
+          <nav className="sidebar-nav">
+            <button 
+              className={activeTab === 'history' ? 'active' : ''} 
+              onClick={() => setActiveTab('history')}
+            >
+              Order History
+            </button>
+            <button 
+              className={activeTab === 'settings' ? 'active' : ''} 
+              onClick={() => setActiveTab('settings')}
+            >
+              Account Settings
+            </button>
+            <button className="logout-btn" onClick={handleLogoutRequest}>
+              Logout
+            </button>
+          </nav>
+        </aside>
 
-        {/* --- RIGHT: ORDER HISTORY --- */}
-        <div className="order-history-section">
-          <h2>ORDER HISTORY</h2>
-          <div className="orders-list">
-            {orders.length === 0 ? (
-              <p className="empty-state">You haven't placed any orders yet.</p>
-            ) : (
-              orders.map(order => (
-                <div key={order._id} className="order-card">
-                  <div className="order-header">
-                    <div>
-                      <span className="order-id">#{order._id.slice(-6).toUpperCase()}</span>
-                      <span className="order-date">{new Date(order.createdAt).toLocaleDateString()}</span>
+        {/* --- MAIN CONTENT --- */}
+        <main className="profile-main">
+          
+          {/* TAB 1: ORDER HISTORY */}
+          {activeTab === 'history' && (
+            <div className="tab-content fade-in">
+              <h2>Recent Orders</h2>
+              
+              <div className="orders-list">
+                {orders.length === 0 ? (
+                  <div className="empty-state-box">
+                    <p>You haven't placed any orders yet.</p>
+                    <Link to="/menu" className="solid-btn">EXPLORE MENU</Link>
+                  </div>
+                ) : (
+                  orders.map(order => (
+                    <div key={order._id} className="order-card">
+                      <div className="order-header">
+                        <div className="order-meta">
+                          <span className="order-id">Order #{order._id.slice(-6).toUpperCase()}</span>
+                          <span className="order-date">{new Date(order.createdAt).toLocaleDateString()} at {order.orderTime || '12:00'}</span>
+                        </div>
+                        <span className={`status-badge ${order.status?.toLowerCase() || order.cookingStatus?.toLowerCase()}`}>
+                          {order.status || order.cookingStatus}
+                        </span>
+                      </div>
+                      
+                      {/* UNIFIED ITEMS DISPLAY */}
+                      <div className="order-items-list">
+                        {order.items && order.items.length > 0 ? (
+                          order.items.map((item, idx) => (
+                            <div key={idx} className="archived-item">
+                              <span className="item-name">{item.name || item.dishName}</span>
+                              <span className="item-details">
+                                {item.personCount} Persons <span className="dot">•</span> ₹{item.price}
+                              </span>
+                            </div>
+                          ))
+                        ) : (
+                          // Fallback for old orders
+                          <div className="archived-item">
+                            <span className="item-name">{order.dishName}</span>
+                            <span className="item-details">{order.personCount} Persons</span>
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="order-logistics-bar">
+                        <div className="log-detail">
+                          <span className="label">Delivery Method</span>
+                          <span>{order.deliveryType ? order.deliveryType.toUpperCase() : 'PICKUP'}</span>
+                        </div>
+                        <div className="log-detail">
+                          <span className="label">Payment</span>
+                          <span>{order.paymentMethod ? order.paymentMethod.toUpperCase() : 'ONLINE'}</span>
+                        </div>
+                        <div className="log-detail total">
+                          <span className="label">Grand Total</span>
+                          <span className="amount">₹{order.grandTotal || order.totalPrice}</span>
+                        </div>
+                      </div>
+
+                      <div className="order-actions">
+                        {(order.cookingStatus === "Delivered" || order.status === "Delivered") && !order.hasFeedback && (
+                          <button 
+                            className="outline-btn" 
+                            onClick={() => { setSelectedOrderId(order._id); setFeedbackModalOpen(true); }}
+                          >
+                            RATE ORDER
+                          </button>
+                        )}
+                      </div>
                     </div>
-                    <span className={`status-badge ${order.status?.toLowerCase() || order.cookingStatus?.toLowerCase()}`}>
-                      {order.status || order.cookingStatus}
-                    </span>
-                  </div>
-                  
-                  <div className="order-items">
-                    <p>{order.dishName} <span className="item-qty">x{order.personCount}</span></p>
-                  </div>
+                  ))
+                )}
+              </div>
+            </div>
+          )}
 
-                  <div className="order-footer">
-                    <span className="order-total">₹{order.totalPrice}</span>
-                    {/* Shows Feedback button ONLY if order is delivered and hasn't been reviewed yet */}
-                    {(order.cookingStatus === "Delivered" || order.status === "Delivered") && !order.hasFeedback && (
-                      <button 
-                        className="feedback-btn" 
-                        onClick={() => { setSelectedOrderId(order._id); setFeedbackModalOpen(true); }}
-                      >
-                        RATE & FEEDBACK
-                      </button>
-                    )}
+          {/* TAB 2: ACCOUNT SETTINGS */}
+          {activeTab === 'settings' && (
+            <div className="tab-content fade-in">
+              <h2>Account Settings</h2>
+              
+              <div className="settings-card">
+                <form className="user-info-form" onSubmit={handleProfileUpdate}>
+                  <div className="form-grid">
+                    <div className="input-group">
+                      <label>Full Name</label>
+                      <input 
+                        type="text" 
+                        value={editFormData.name} 
+                        onChange={e => setEditFormData({...editFormData, name: e.target.value})} 
+                        required 
+                      />
+                    </div>
+                    <div className="input-group">
+                      <label>Email Address</label>
+                      <input 
+                        type="email" 
+                        value={editFormData.email} 
+                        onChange={e => setEditFormData({...editFormData, email: e.target.value})} 
+                        required 
+                      />
+                    </div>
+                    <div className="input-group">
+                      <label>Phone Number</label>
+                      <input 
+                        type="tel" 
+                        value={editFormData.phone} 
+                        onChange={e => setEditFormData({...editFormData, phone: e.target.value})} 
+                        placeholder="10-digit mobile number"
+                      />
+                    </div>
                   </div>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
+                  <div className="form-actions">
+                    <button type="submit" className="solid-btn" disabled={isSaving}>
+                      {isSaving ? "SAVING..." : "SAVE CHANGES"}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
+        </main>
       </div>
 
       {/* --- FEEDBACK MODAL --- */}
@@ -259,10 +344,54 @@ const Profile = () => {
               onChange={e => setFeedbackData({...feedbackData, comment: e.target.value})}
             ></textarea>
 
-            <button className="submit-feedback-btn" onClick={submitFeedback}>SUBMIT FEEDBACK</button>
+            <button className="solid-btn full-width" onClick={submitFeedback}>SUBMIT FEEDBACK</button>
           </div>
         </div>
       )}
+
+      {/* --- CUSTOM BRANDED ALERT MODAL --- */}
+      {customAlert && (
+        <div className="custom-alert-overlay">
+          <div className={`custom-alert-box ${customAlert.type}`}>
+            <h3>{customAlert.type === "success" ? "SUCCESS" : "ATTENTION"}</h3>
+            <p>{customAlert.message}</p>
+            <button 
+              className="custom-alert-btn" 
+              onClick={() => {
+                if (customAlert.onClose) customAlert.onClose();
+                setCustomAlert(null);
+              }}
+            >
+              ACKNOWLEDGE
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* --- CUSTOM CONFIRM MODAL (LOGOUT) --- */}
+      {confirmModal && (
+        <div className="custom-alert-overlay">
+          <div className="custom-alert-box error">
+            <h3>LOGOUT</h3>
+            <p>{confirmModal.message}</p>
+            <div className="confirm-actions">
+              <button className="custom-alert-btn outline" onClick={() => setConfirmModal(null)}>
+                CANCEL
+              </button>
+              <button 
+                className="custom-alert-btn" 
+                onClick={() => {
+                  confirmModal.onConfirm();
+                  setConfirmModal(null);
+                }}
+              >
+                YES, LOGOUT
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };

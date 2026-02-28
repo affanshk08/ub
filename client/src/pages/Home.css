@@ -186,7 +186,7 @@
 .horizontal-scroll-section {
   width: 100%;
   height: 100vh;
-  background: #ffffff; /* Changed to stark white */
+  background: #111; /* Changed to stark white */
   display: flex;
   align-items: center;
   overflow: hidden;

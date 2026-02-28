@@ -1,17 +1,18 @@
-import { useRef, useState } from "react"; // Added useState
+import { useRef, useState } from "react"; 
 import { useGSAP } from "@gsap/react";
-import { Link, useNavigate } from "react-router-dom"; // Added useNavigate
+import { Link, useNavigate } from "react-router-dom"; 
 import gsap from "gsap";
 import "./Signup.css";
 
 const Signup = () => {
   const container = useRef();
-  const navigate = useNavigate(); // Initialize navigate
+  const navigate = useNavigate(); 
 
   // --- Logic: Form State ---
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    phone: "", // FIX: Added phone to state
     password: "",
   });
   const [error, setError] = useState("");
@@ -26,7 +27,7 @@ const Signup = () => {
       ease: "expo.inOut",
       stagger: 0.04,
     })
-    // 2. Heading reveal (FIXED: Changed .login-heading to .signup-heading to match your HTML)
+    // 2. Heading reveal 
     .from(".signup-heading h1", {
       y: 200,
       duration: 1,
@@ -111,13 +112,26 @@ const Signup = () => {
           </div>
 
           <div className="input-wrapper">
-            <label>CHEF EMAIL</label>
+            <label>EMAIL ADDRESS</label>
             <input 
               type="email" 
               placeholder="user@gmail.com" 
               required
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+            />
+            <div className="line"></div>
+          </div>
+
+          {/* FIX: Added Phone Input Field */}
+          <div className="input-wrapper">
+            <label>PHONE NUMBER</label>
+            <input 
+              type="tel" 
+              placeholder="10-digit mobile" 
+              required
+              value={formData.phone}
+              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
             />
             <div className="line"></div>
           </div>
@@ -135,7 +149,6 @@ const Signup = () => {
           </div>
 
           <div className="input-wrapper">
-            {/* Logic: Changed type to submit */}
             <button className="auth-btn" type="submit">
                 LET'S COOK
             </button>

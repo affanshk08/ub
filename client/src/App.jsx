@@ -17,12 +17,23 @@ import AdminDashboard from './pages/Admin/AdminDashboard';
 
 import './components/Navbar.css';
 
+// Logic: Protected Route for standard authenticated users
+const ProtectedRoute = ({ children }) => {
+  const user = JSON.parse(localStorage.getItem("user"));
+  // If no user is logged in, redirect them to the login page immediately
+  if (!user) {
+    // 'replace' prevents them from clicking the back button and getting stuck in a redirect loop
+    return <Navigate to="/login" replace />; 
+  }
+  return children;
+};
+
 // Logic: Protected Route for Admin
 const AdminRoute = ({ children }) => {
   const user = JSON.parse(localStorage.getItem("user"));
   // Checks if user exists and if their role is strictly 'admin'
   if (!user || user.role !== "admin") {
-    return <Navigate to="/" />;
+    return <Navigate to="/" replace />;
   }
   return children;
 };
@@ -35,23 +46,50 @@ function App() {
         
         <Transition>
           <Routes>
+            {/* PUBLIC ROUTES */}
             <Route path="/" element={<Home />} />
-            <Route path="/menu" element={<Menu />} />
-            {/* Logic: Added Route for the Booking page */}
-            <Route path="/booking" element={<Booking />} />
-            <Route path="/cart" element={<Cart />} />
-            {/* Logic: Added Route for the new Profile page */}
-            <Route path="/profile" element={<Profile />} />
-            
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             
-            {/* Logic: Protected Admin Dashboard Route */}
+            {/* PROTECTED ROUTES (Requires Login) */}
+            <Route 
+              path="/menu" 
+              element={
+                <ProtectedRoute>
+                  <Menu />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/booking" 
+              element={
+                <ProtectedRoute>
+                  <Booking />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/cart" 
+              element={
+                <ProtectedRoute>
+                  <Cart />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/profile" 
+              element={
+                <ProtectedRoute>
+                  <Profile />
+                </ProtectedRoute>
+              } 
+            />
+            
+            {/* STRICT ADMIN ROUTE */}
             <Route 
               path="/admin" 
               element={
                 <AdminRoute>
-                  {/* Logic: Replaced the placeholder div with your AdminDashboard component */}
                   <AdminDashboard />
                 </AdminRoute>
               } 

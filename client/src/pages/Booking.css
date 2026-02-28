@@ -203,15 +203,14 @@
     padding: 12px;
     background: #111;
     border: 1px solid #ddd;
-    box-sizing: border-box; /* Fixes input overflow issues */
-    color: #ffffff; /* Forces the typed text to be dark */
+    box-sizing: border-box;
+    color: #ffffff;
     font-family: 'Montserrat', sans-serif;
     font-size: 14px;
 }
 
-/* Optional: This ensures the placeholder text is also visible but slightly faded */
 .input-group input::placeholder {
-    color: #888; 
+    color: #888;
 }
 
 .checkout-summary {
@@ -262,6 +261,107 @@
 
 .close-modal:hover {
     color: #e3b94d;
+}
+
+/* --- CUSTOM BRANDED ALERT MODAL --- */
+.custom-alert-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(5px);
+    z-index: 10000;
+    /* Must be higher than the preview modal */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: fadeInAlert 0.3s ease;
+}
+
+@keyframes fadeInAlert {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.custom-alert-box {
+    background: #f6f4f1;
+    padding: 40px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+    animation: slideUpAlert 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+@keyframes slideUpAlert {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.custom-alert-box.error {
+    border-top: 6px solid #c0392b;
+    /* Deep Red for Error */
+}
+
+.custom-alert-box.success {
+    border-top: 6px solid #e3b94d;
+    /* Brand Gold for Success */
+}
+
+.custom-alert-box h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    color: #111;
+    margin: 0 0 15px 0;
+    letter-spacing: 1px;
+}
+
+.custom-alert-box.error h3 {
+    color: #c0392b;
+}
+
+.custom-alert-box.success h3 {
+    color: #e3b94d;
+}
+
+.custom-alert-box p {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+    color: #444;
+    line-height: 1.6;
+    margin-bottom: 30px;
+}
+
+.custom-alert-btn {
+    background: #111;
+    color: #f6f4f1;
+    border: none;
+    padding: 12px 30px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: 0.3s;
+    width: 100%;
+}
+
+.custom-alert-btn:hover {
+    background: #e3b94d;
+    color: #111;
 }
 
 /* --- RESPONSIVENESS (Media Queries) --- */
@@ -315,7 +415,7 @@
         flex-direction: column;
         gap: 15px;
     }
-    
+
     .close-modal {
         top: 10px;
         right: 15px;
