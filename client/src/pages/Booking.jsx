@@ -321,7 +321,7 @@ const Booking = () => {
 
   const handleWhatsAppInquiry = () => {
     const text = `Hello Usman Bhai Bhatiyara, I am interested in the ${selectedCombo.name} wedding package.\n\nDetails:\nExpected Persons: ${personCount}\nTentative Date: ${orderDetails.date || 'Not set'}\n\nPlease share further details regarding this package.`;
-    window.open(`https://wa.me/919999999999?text=${encodeURIComponent(text)}`, "_blank");
+    window.open(`https://wa.me/917069131793?text=${encodeURIComponent(text)}`, "_blank");
   };
 
   return (
