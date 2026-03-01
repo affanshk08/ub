@@ -1,0 +1,671 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;700&display=swap');
+
+.wedding-cart-page {
+    padding: 160px 10% 80px;
+    background-color: #f6f4f1;
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+.wedding-cart-page * {
+    box-sizing: border-box;
+}
+
+.cart-header {
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.cart-header h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(50px, 10vw, 120px);
+    color: #111;
+    margin: 0;
+}
+
+.editorial-label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11px;
+    letter-spacing: 5px;
+    color: #e3b94d;
+    font-weight: 700;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+}
+
+.cart-container {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.cart-item {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    padding: 20px 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.cart-img {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border: 1px solid #e3b94d;
+}
+
+.cart-info {
+    flex: 1;
+}
+
+.cart-info h3 {
+    font-family: 'Bebas Neue';
+    font-size: 28px;
+    margin-bottom: 5px;
+    color: #111;
+    letter-spacing: 1px;
+}
+
+.cart-info .cat {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    color: #e3b94d;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.cart-info .count,
+.cart-info .date-time {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    color: #666;
+    margin-top: 5px;
+}
+
+.cart-price {
+    text-align: right;
+}
+
+.cart-price span {
+    display: block;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    margin-bottom: 10px;
+    color: #111;
+}
+
+.remove-btn {
+    background: none;
+    border: none;
+    color: #8e2b2b;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    font-weight: 700;
+    transition: 0.3s;
+}
+
+.remove-btn:hover {
+    color: #111;
+    text-decoration: underline;
+}
+
+.cart-summary {
+    margin-top: 50px;
+    padding-top: 30px;
+    border-top: 2px solid #111;
+}
+
+.total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.total-row span {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 2px;
+    color: #888;
+}
+
+.grand-price {
+    font-size: 48px !important;
+    color: #111 !important;
+}
+
+.checkout-btn {
+    width: 100%;
+    padding: 24px;
+    background: #111;
+    color: #fff;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 24px;
+    letter-spacing: 4px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.4s ease;
+    display: block;
+}
+
+.checkout-btn:hover {
+    background: #e3b94d;
+    color: #111;
+    letter-spacing: 8px;
+}
+
+.empty-msg {
+    text-align: center;
+    padding: 100px 0;
+    font-family: 'Montserrat', sans-serif;
+    color: #666;
+}
+
+.back-btn {
+    display: inline-block;
+    margin-top: 20px;
+    color: #111;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-decoration: underline;
+    font-weight: 700;
+    transition: color 0.3s;
+}
+
+.back-btn:hover {
+    color: #e3b94d;
+}
+
+/* --- MULTI-STEP CHECKOUT MODAL --- */
+.checkout-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.9);
+    backdrop-filter: blur(8px);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.checkout-modal.wedding-modal {
+    background: #f6f4f1;
+    padding: 50px;
+    width: 90%;
+    max-width: 600px;
+    border-top: 6px solid #111;
+    border-bottom: 6px solid #e3b94d;
+    position: relative;
+    max-height: 95vh;
+    overflow-y: auto;
+}
+
+.modal-progress {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.modal-progress span {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #aaa;
+}
+
+.modal-progress span.active {
+    color: #111;
+    border-bottom: 2px solid #e3b94d;
+    padding-bottom: 5px;
+}
+
+.modal-progress .divider {
+    width: 40px;
+    height: 1px;
+    background: #ddd;
+}
+
+.step-content {
+    animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.step-content h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 45px;
+    color: #111;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.step-desc {
+    text-align: center;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 30px;
+}
+
+/* --- ADDRESS SECTION --- */
+.address-section {
+    background: white;
+    padding: 25px;
+    border: 1px solid #ddd;
+    margin-bottom: 30px;
+}
+
+.detect-location-btn {
+    width: 100%;
+    background: #111;
+    color: #fff;
+    border: none;
+    padding: 15px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: 0.3s;
+}
+
+.detect-location-btn:hover {
+    background: #e3b94d;
+    color: #111;
+}
+
+.coords-status {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10px;
+    color: #888;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.address-form input {
+    width: 100%;
+    padding: 15px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+    background: #fdfdfd;
+}
+
+.address-form input:last-child {
+    margin-bottom: 0;
+}
+
+/* --- INVOICE & SPLIT PAYMENT --- */
+.invoice-breakdown {
+    background: white;
+    padding: 25px;
+    border: 1px solid #ddd;
+    margin-bottom: 20px;
+}
+
+.breakdown-row {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px dotted #eee;
+}
+
+.breakdown-row.highlight-green {
+    color: #27ae60;
+    font-weight: 700;
+}
+
+.breakdown-row.grand-total {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    color: #111;
+    align-items: center;
+}
+
+.split-payment-box {
+    display: flex;
+    margin-bottom: 30px;
+    border: 1px solid #e3b94d;
+    background: #fff;
+}
+
+.advance-section,
+.balance-section {
+    flex: 1;
+    padding: 20px;
+    text-align: center;
+}
+
+.advance-section {
+    background: #111;
+    color: #fff;
+}
+
+.advance-section h4,
+.balance-section h4 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10px;
+    letter-spacing: 1px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.advance-section h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 40px;
+    color: #e3b94d;
+    margin: 0 0 5px 0;
+}
+
+.advance-section p {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 9px;
+    color: #aaa;
+}
+
+.balance-section h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    color: #111;
+    margin: 0;
+}
+
+/* --- PAYMENT QR --- */
+.online-payment-box {
+    text-align: center;
+}
+
+.qr-container {
+    background: white;
+    padding: 20px;
+    border: 1px solid #ddd;
+    display: inline-block;
+    margin-bottom: 20px;
+}
+
+.qr-container img {
+    width: 200px;
+    height: 200px;
+    display: block;
+    margin: 0 auto 15px;
+}
+
+.qr-container p {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    color: #888;
+    margin: 0;
+}
+
+.utr-input-group {
+    text-align: left;
+    margin-bottom: 30px;
+}
+
+.utr-input-group label {
+    display: block;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    color: #111;
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+}
+
+.utr-input-group input {
+    width: 100%;
+    padding: 16px;
+    color: #111;
+    border: 1px solid #111;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px;
+    text-align: center;
+    letter-spacing: 2px;
+}
+
+/* --- BUTTONS --- */
+.confirm-step-btn {
+    width: 100%;
+    background: #111;
+    color: white;
+    border: none;
+    padding: 20px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.confirm-step-btn:hover {
+    background: #e3b94d;
+    color: #111;
+}
+
+.confirm-step-btn.loading {
+    background: #e3b94d;
+    color: #111;
+    cursor: wait;
+}
+
+.modal-actions-split {
+    display: flex;
+    gap: 15px;
+}
+
+.back-step-btn {
+    flex: 1;
+    background: transparent;
+    border: 1px solid #111;
+    color: #111;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.back-step-btn:hover {
+    background: #111;
+    color: white;
+}
+
+.modal-actions-split .confirm-step-btn {
+    flex: 2;
+}
+
+.close-modal {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #111;
+}
+
+/* --- CUSTOM BRANDED ALERT MODAL --- */
+.custom-alert-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(5px);
+    z-index: 10000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: fadeInAlert 0.3s ease;
+}
+
+@keyframes fadeInAlert {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.custom-alert-box {
+    background: #f6f4f1;
+    padding: 40px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+    animation: slideUpAlert 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+@keyframes slideUpAlert {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.custom-alert-box.error {
+    border-top: 6px solid #c0392b;
+}
+
+.custom-alert-box.success {
+    border-top: 6px solid #e3b94d;
+}
+
+.custom-alert-box h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    color: #111;
+    margin: 0 0 15px 0;
+    letter-spacing: 1px;
+}
+
+.custom-alert-box.error h3 {
+    color: #c0392b;
+}
+
+.custom-alert-box.success h3 {
+    color: #e3b94d;
+}
+
+.custom-alert-box p {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+    color: #444;
+    line-height: 1.6;
+    margin-bottom: 30px;
+}
+
+.custom-alert-btn {
+    background: #111;
+    color: #f6f4f1;
+    border: none;
+    padding: 12px 30px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: 0.3s;
+    width: 100%;
+}
+
+.custom-alert-btn:hover {
+    background: #e3b94d;
+    color: #111;
+}
+
+/* --- RESPONSIVENESS (Media Queries) --- */
+
+@media (max-width: 768px) {
+    .wedding-cart-page {
+        padding: 120px 5% 60px;
+    }
+
+    .cart-item {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+    }
+
+    .cart-img {
+        width: 100%;
+        height: 180px;
+        border-radius: 4px;
+    }
+
+    .cart-price {
+        text-align: center;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-top: 1px dashed #ddd;
+        padding-top: 15px;
+    }
+
+    .cart-price span {
+        margin-bottom: 0;
+    }
+
+    .grand-price {
+        font-size: 36px !important;
+    }
+
+    .checkout-modal.wedding-modal {
+        padding: 40px 20px;
+    }
+
+    .split-payment-box {
+        flex-direction: column;
+    }
+
+    .advance-section,
+    .balance-section {
+        padding: 15px;
+    }
+
+    .modal-actions-split {
+        flex-direction: column;
+    }
+
+    .back-step-btn {
+        padding: 15px;
+    }
+}

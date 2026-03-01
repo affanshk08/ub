@@ -10,6 +10,8 @@ import Menu from './pages/Menu';
 import Booking from './pages/Booking';
 // Logic: Importing the Cart page
 import Cart from './pages/Cart';
+// Logic: Importing the newly created Wedding Cart page
+import WeddingCart from './pages/WeddingCart';
 // Logic: Importing the new Profile page
 import Profile from './pages/Profile';
 // Logic: Importing the AdminDashboard from the folder we created
@@ -73,6 +75,15 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Cart />
+                </ProtectedRoute>
+              } 
+            />
+            {/* NEW STRICTLY WEDDING CART ROUTE */}
+            <Route 
+              path="/wedding-cart" 
+              element={
+                <ProtectedRoute>
+                  <WeddingCart />
                 </ProtectedRoute>
               } 
             />
