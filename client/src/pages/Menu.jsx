@@ -4,7 +4,7 @@ import gsap from "gsap";
 import { useNavigate, Link } from "react-router-dom";
 import "./Menu.css";
 
-// 1. CRUD-Ready Backend Structure
+// 1. Base Menu Data (Preserved for Images and Nested Structure)
 const initialMenuData = {
   veg: {
     "Farsan": {
@@ -127,7 +127,6 @@ const Menu = () => {
   const [isVeg, setIsVeg] = useState(true);
 
   const currentMenu = isVeg ? menuData.veg : menuData.nonveg;
-
   const [activeSection, setActiveSection] = useState(Object.keys(currentMenu)[0]);
 
   const [expandedSubCat, setExpandedSubCat] = useState(null);
@@ -138,7 +137,6 @@ const Menu = () => {
 
   // Custom Alert State
   const [customAlert, setCustomAlert] = useState(null);
-
   const [cartItems, setCartItems] = useState([]);
 
   const [showDetailsModal, setShowDetailsModal] = useState(false);
@@ -155,6 +153,55 @@ const Menu = () => {
   const cartBarRef = useRef();
   const summaryCardRef = useRef();
 
+  // FETCH MENU FROM DB AND MERGE IT WITH HARDCODED DATA
+  useEffect(() => {
+    const fetchDBMenu = async () => {
+      try {
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/menu`);
+        const dbItems = await res.json();
+        
+        if(dbItems.length > 0) {
+          // Deep clone the hardcoded data
+          const updatedMenu = JSON.parse(JSON.stringify(initialMenuData));
+          
+          // Create a new section for Admin items
+          updatedMenu.veg["New Additions"] = { "Chef's Specials": [] };
+          updatedMenu.nonveg["New Additions"] = { "Chef's Specials": [] };
+
+          dbItems.forEach(item => {
+            if (item.isCombo) return; // Skip combos, they belong in wedding booking
+
+            const formattedItem = {
+              id: item._id,
+              name: item.name,
+              price: item.price,
+              desc: item.description || "Freshly added to the menu by our head chef.",
+              images: ["https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=800&q=80"] // Default culinary image
+            };
+
+            // Simple logic: if name contains 'chicken' or 'mutton', put in non-veg
+            const isNonVeg = item.name.toLowerCase().includes('chicken') || item.name.toLowerCase().includes('mutton') || item.name.toLowerCase().includes('fish');
+            
+            if (isNonVeg) {
+              updatedMenu.nonveg["New Additions"]["Chef's Specials"].push(formattedItem);
+            } else {
+              updatedMenu.veg["New Additions"]["Chef's Specials"].push(formattedItem);
+            }
+          });
+
+          // Clean up empty addition categories
+          if(updatedMenu.veg["New Additions"]["Chef's Specials"].length === 0) delete updatedMenu.veg["New Additions"];
+          if(updatedMenu.nonveg["New Additions"]["Chef's Specials"].length === 0) delete updatedMenu.nonveg["New Additions"];
+
+          setMenuData(updatedMenu);
+        }
+      } catch (err) {
+        console.error("Failed to fetch dynamic menu:", err);
+      }
+    };
+    fetchDBMenu();
+  }, []);
+
   useEffect(() => {
     const data = JSON.parse(localStorage.getItem("ub_cart")) || [];
     setCartItems(data);
@@ -168,10 +215,7 @@ const Menu = () => {
     }
   }, []);
 
-  const getCount = (id) => {
-    return dishCounts[id] !== undefined ? dishCounts[id] : 10;
-  };
-
+  const getCount = (id) => dishCounts[id] !== undefined ? dishCounts[id] : 10;
   const getTodayDate = () => new Date().toISOString().split('T')[0];
 
   const updateCount = (id, delta) => {
@@ -339,7 +383,6 @@ const Menu = () => {
       setIsVeg(setToVeg);
       const newMenu = setToVeg ? menuData.veg : menuData.nonveg;
       setActiveSection(Object.keys(newMenu)[0]);
-
       setExpandedSubCat(null);
       setExpandedDish(null);
     });
@@ -380,7 +423,7 @@ const Menu = () => {
         <div className="menu-curtain" ref={curtainRef}></div>
 
         <div className="menu-content">
-          {Object.entries(currentMenu[activeSection]).map(([subCat, dishes]) => (
+          {Object.entries(currentMenu[activeSection] || {}).map(([subCat, dishes]) => (
             <div key={subCat} className={`sub-cat-block ${expandedSubCat === subCat ? "is-open" : ""}`}>
               <div className="sub-cat-header" onClick={() => setExpandedSubCat(expandedSubCat === subCat ? null : subCat)}>
                 <h2>{subCat}</h2>
@@ -550,7 +593,6 @@ const Menu = () => {
         <p>ARTISANAL QUALITY | MIN 10 PERSONS | MAX ORDER ₹5,000</p>
       </footer>
 
-      {/* --- CUSTOM BRANDED ALERT MODAL --- */}
       {customAlert && (
         <div className="custom-alert-overlay">
           <div className={`custom-alert-box ${customAlert.type}`}>

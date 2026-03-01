@@ -33,6 +33,7 @@ app.use(express.urlencoded({ limit: '10mb', extended: true }));
 app.use('/api/auth', authRoutes);     // Auth endpoints: signup, login
 app.use('/api/orders', orderRoutes);  // Order endpoints: place, all, update
 app.use('/api/users', userRoutes);    // User endpoints: profile update
+app.use('/api/admin', require('./routes/admin'));
 
 // Basic Route for Testing
 app.get('/', (req, res) => {

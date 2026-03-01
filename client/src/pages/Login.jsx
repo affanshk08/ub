@@ -54,31 +54,31 @@ const Login = () => {
     setError("");
 
     try {
-      // Using 127.0.0.1 to match your working Signup logic
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/login`, {
+      // 1. Send the login request
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
 
+      // 2. Parse the data correctly using 'response'
       const data = await response.json();
 
       if (!response.ok) {
-        // This is where your 400 error is caught and shown to the user
         throw new Error(data.message || "Invalid Email or Password");
       }
 
-      // Save user session
+      // 3. Save user session
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
 
-      // Redirect to home and refresh to update Navbar
+      // 4. Redirect to home and refresh to update Navbar
       navigate("/");
       window.location.reload();
     } catch (err) {
       setError(err.message);
     }
-  };
+  }
 
   return (
     <div className="login-screen" ref={container}>

@@ -12,7 +12,7 @@ const Cart = () => {
   const [paymentMethod, setPaymentMethod] = useState("online"); // 'online' | 'cod'
   
   // Custom Alert State
-  const [customAlert, setCustomAlert] = useState(null); // { type: 'success' | 'error', message: string, onClose?: () => void }
+  const [customAlert, setCustomAlert] = useState(null); 
   
   const [utr, setUtr] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -32,9 +32,9 @@ const Cart = () => {
 
   // --- FINANCIAL CALCULATIONS ---
   const subTotal = cartItems.reduce((acc, item) => acc + item.totalPrice, 0);
-  const cgst = Math.round(subTotal * 0.025); // 2.5% Industry Standard
-  const sgst = Math.round(subTotal * 0.025); // 2.5% Industry Standard
-  const deliveryCharge = deliveryType === "delivery" ? 300 : 0; // Standard Flat Fee
+  const cgst = Math.round(subTotal * 0.025); 
+  const sgst = Math.round(subTotal * 0.025); 
+  const deliveryCharge = deliveryType === "delivery" ? 300 : 0; 
   const grandTotal = subTotal + cgst + sgst + deliveryCharge;
 
   // --- UPI LOGIC ---
@@ -100,15 +100,13 @@ const Cart = () => {
       const orderPayload = {
         userId: userId,
         userName: user.name,
-        // Fallback for old schemas that expect a top-level string
         dishName: "Combined Selection", 
         category: "Multiple",
-        personCount: cartItems.reduce((acc, curr) => Math.max(acc, curr.personCount), 0), // Max persons
+        personCount: cartItems.reduce((acc, curr) => Math.max(acc, curr.personCount), 0), 
         
-        // NEW: Array containing the exact items selected
+        // CRITICAL FIX: Changed `name` to `dishName` to match Backend Schema
         items: cartItems.map(item => ({
-          dishId: item.dishId,
-          name: item.name,
+          dishName: item.name, 
           category: item.category,
           personCount: item.personCount,
           price: item.totalPrice
@@ -247,7 +245,7 @@ const Cart = () => {
                 {deliveryType === "delivery" && (
                   <div className="address-section">
                     <button className="detect-location-btn" onClick={handleDetectLocation}>
-                       📍 PIN MY CURRENT LOCATION ON MAP
+                        📍 PIN MY CURRENT LOCATION ON MAP
                     </button>
                     <p className="coords-status">{address.coords ? "Location Pinned Successfully ✓" : "Map location not pinned yet"}</p>
                     

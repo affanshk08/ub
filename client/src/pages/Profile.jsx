@@ -40,7 +40,8 @@ const Profile = () => {
 
     const userId = user._id || user.id;
 
-    fetch(`http://127.0.0.1:5000/api/orders/user/${userId}`, {
+    // FIX: Replaced hardcoded localhost URL
+    fetch(`${import.meta.env.VITE_API_URL}/api/orders/user/${userId}`, {
       headers: { "Authorization": `Bearer ${token}` }
     })
       .then(res => res.json())
@@ -113,7 +114,8 @@ const Profile = () => {
   const submitFeedback = async () => {
     const token = localStorage.getItem("token");
     try {
-      const res = await fetch(`http://127.0.0.1:5000/api/orders/${selectedOrderId}/feedback`, {
+      // FIX: Replaced hardcoded localhost URL
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/orders/${selectedOrderId}/feedback`, {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",
