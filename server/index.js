@@ -6,16 +6,26 @@ const dotenv = require('dotenv');
 // Import Routes
 const authRoutes = require('./routes/auth');
 const orderRoutes = require('./routes/order'); 
-const userRoutes = require('./routes/user'); // Logic: Added User Routes for Profile
+const userRoutes = require('./routes/user'); 
 
 // Load environment variables
 dotenv.config();
 
 const app = express();
 
-// Middleware
+// --- SECURE CORS MIDDLEWARE FOR DEPLOYMENT ---
+const corsOptions = {
+  origin: [
+    process.env.CLIENT_URL,  // Your live Vercel link (Set this in Render Dashboard later)
+    'http://localhost:5173', // Allows your local frontend to still connect during development
+    'http://localhost:3000'
+  ],
+  credentials: true,
+  optionsSuccessStatus: 200
+};
+app.use(cors(corsOptions)); 
+
 // Increased payload size limit to allow profile picture (base64) uploads
-app.use(cors()); 
 app.use(express.json({ limit: '10mb' })); 
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
 

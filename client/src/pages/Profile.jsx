@@ -63,7 +63,7 @@ const Profile = () => {
     const token = localStorage.getItem("token");
     
     try {
-      const res = await fetch(`http://127.0.0.1:5000/api/users/profile`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/users/profile`, {
         method: "PUT",
         headers: { 
           "Content-Type": "application/json",
