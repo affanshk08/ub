@@ -4,177 +4,177 @@ import gsap from "gsap";
 import { useNavigate } from "react-router-dom";
 import "./Booking.css";
 
-// --- 24 PREMIUM WEDDING COMBOS (12 VEG & 12 NON-VEG) ---
+// --- 24 PREMIUM WEDDING COMBOS (SYNCED EXACTLY WITH MENU.JSX) ---
 const WEDDING_COMBOS = [
   // --- VEG COMBOS ---
   { id: "wv1", type: "veg", name: "The Grand Surti Feast", price: 950, items: [
-      { name: "Surti Locho", image: "https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?auto=format&fit=crop&w=800&q=80", desc: "A Surat specialty served hot with signature locho masala." },
-      { name: "Surti Undhiyu", image: "https://images.unsplash.com/photo-1563379091339-03b21bc4a4f8?auto=format&fit=crop&w=800&q=80", desc: "The legendary Surat winter stew with seasonal vegetables." },
-      { name: "Surti Dal", image: "https://images.unsplash.com/photo-1512058560366-cd2429ff5c7c?auto=format&fit=crop&w=800&q=80", desc: "A sweet and tangy pigeon pea lentil preparation." },
-      { name: "Surti Ghari", image: "https://images.unsplash.com/photo-1589113103553-5384496ff27b?auto=format&fit=crop&w=800&q=80", desc: "The pinnacle of Surat's sweets, packed with mawa and nuts." }
+      { name: "Surti Locho", image: "https://s3-ap-south-1.amazonaws.com/betterbutterbucket-silver/taqizaki-khan20180620192231869.jpeg", desc: "A Surat specialty. Steamed, spiced gram flour base served hot with oil, butter, and a signature locho masala." },
+      { name: "Surti Undhiyu", image: "https://static.toiimg.com/thumb/60855023.cms?imgsize=339997&width=800&height=800?auto=format&fit=crop&w=800&q=80", desc: "The legendary Surat winter stew. A complex, slow-cooked mix of seasonal vegetables, muthiya, and fresh green garlic." },
+      { name: "Surti Dal", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTNEg2o5GT3aGcMWf580SWOTNz-vy5VM-S0yw&s?auto=format&fit=crop&w=800&q=80", desc: "A sweet and tangy pigeon pea lentil preparation tempered with peanuts, tomatoes, and kokum." },
+      { name: "Surti Ghari", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQAXXJN8n0doghkEc2vuHw0ZlI068p1HsCJag&s?auto=format&fit=crop&w=800&q=80", desc: "The pinnacle of Surat's sweets. A rich disc made of puri dough, mawa, ghee, and sugar, packed with nuts." }
     ]
   },
   { id: "wv2", type: "veg", name: "Royal Kathiyawadi", price: 880, items: [
-      { name: "Methi Na Gota", image: "https://images.unsplash.com/photo-1612195583950-b8fd34c87093?auto=format&fit=crop&w=800&q=80", desc: "Golden fritters with fresh fenugreek and coriander seeds." },
-      { name: "Sev Tameta", image: "https://images.unsplash.com/photo-1603894584115-f73f2ec851ad?auto=format&fit=crop&w=800&q=80", desc: "Sweet and spicy tomato curry garnished with besan sev." },
-      { name: "Rajwadi Khichdi", image: "https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=800&q=80", desc: "A rich khichdi tempered generously with pure desi ghee." },
-      { name: "Mohanthal", image: "https://images.unsplash.com/photo-1596797038583-18a68a637311?auto=format&fit=crop&w=800&q=80", desc: "Traditional gram flour fudge enriched with ghee." }
+      { name: "Methi Na Gota", image: "https://www.nehascookbook.com/wp-content/uploads/2022/09/Mix-bhaji-gota-WS-1.jpg?auto=format&fit=crop&w=800&q=80", desc: "Golden, crispy fritters made with gram flour, fresh fenugreek leaves, and whole coriander seeds." },
+      { name: "Sev Tameta", image: "https://thewhiskaddict.com/wp-content/uploads/2024/12/IMG_1265-scaled.jpg?auto=format&fit=crop&w=800&q=80", desc: "A Kathiyawadi staple. Sweet and spicy tomato curry garnished with a thick layer of crispy besan sev." },
+      { name: "Rajwadi Khichdi", image: "https://i.ytimg.com/vi/RPRORGFaC3o/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLDKcIY1dWtK1cgWuk80HRQhpPifoQ?auto=format&fit=crop&w=800&q=80", desc: "A rich, vegetable-loaded khichdi tempered generously with whole spices and pure desi ghee." },
+      { name: "Mohanthal", image: "https://www.sharmispassions.com/wp-content/uploads/2014/12/basundi4.jpg?auto=format&fit=crop&w=800&q=80", desc: "Traditional gram flour fudge enriched with generous amounts of ghee, offering a granular, melt-in-mouth texture." }
     ]
   },
   { id: "wv3", type: "veg", name: "The Classic Gujarati", price: 850, items: [
-      { name: "Khaman", image: "https://images.unsplash.com/photo-1626074353765-517a681e40be?auto=format&fit=crop&w=800&q=80", desc: "Soft, spongy steamed cakes tempered with mustard seeds." },
-      { name: "Ringan No Olo", image: "https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?auto=format&fit=crop&w=800&q=80", desc: "Fire-roasted eggplant mashed with green garlic." },
-      { name: "Kadhi Khichdi", image: "https://images.unsplash.com/photo-1626500155537-883777587788?auto=format&fit=crop&w=800&q=80", desc: "Yellow lentil khichdi alongside spiced yogurt kadhi." },
-      { name: "Basundi", image: "https://images.unsplash.com/photo-1589302168068-964664d93dc0?auto=format&fit=crop&w=800&q=80", desc: "Sweetened, dense milk boiled to a creamy texture." }
+      { name: "Khaman", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRp7ZmClW4HbmYTCwqFMbvq-zF6fHZxJddnEg&s", desc: "Soft, spongy steamed cakes made from fermented chana dal, tempered with mustard seeds and green chilies." },
+      { name: "Ringan No Olo", image: "https://img.gujaratijagran.com/2024/11/Ringna-No-Olo-Baingan-Bharta-Recipe.jpg.webp?auto=format&fit=crop&w=800&q=80", desc: "Fire-roasted eggplant mashed and cooked with spring onions, green garlic, and fresh tomatoes." },
+      { name: "Kadhi Khichdi", image: "https://www.nehascookbook.com/wp-content/uploads/2022/10/Bardoli-khichdi-WS.jpg?auto=format&fit=crop&w=800&q=80", desc: "Simple yellow lentil and rice khichdi served alongside a warm, spiced yogurt and besan kadhi." },
+      { name: "Basundi", image: "https://www.sharmispassions.com/wp-content/uploads/2014/12/basundi4.jpg?auto=format&fit=crop&w=800&q=80", desc: "Sweetened, dense milk boiled down to a creamy texture, served chilled with sliced almonds." }
     ]
   },
   { id: "wv4", type: "veg", name: "Monsoon Cravings", price: 920, items: [
-      { name: "Lilva Kachori", image: "https://images.unsplash.com/photo-1603962285838-838104440129?auto=format&fit=crop&w=800&q=80", desc: "Deep-fried pastry stuffed with fresh green pigeon peas." },
-      { name: "Lasaniya Batata", image: "https://images.unsplash.com/photo-1545231027-63b6f2a3c2dd?auto=format&fit=crop&w=800&q=80", desc: "Baby potatoes simmered in a fierce garlic sauce." },
-      { name: "Jeera Rice", image: "https://images.unsplash.com/photo-1563379091339-03b21bc4a4f8?auto=format&fit=crop&w=800&q=80", desc: "Fluffy basmati rice tempered with roasted cumin." },
-      { name: "Dudhi Halwa", image: "https://images.unsplash.com/photo-1621361019047-98319f390886?auto=format&fit=crop&w=800&q=80", desc: "Fresh bottle gourd slow-cooked with whole milk." }
+      { name: "Lilva Kachori", image: "https://www.nehascookbook.com/wp-content/uploads/2020/11/Lilva-kachori-WS-500x500.jpg?auto=format&fit=crop&w=800&q=80", desc: "Crispy, deep-fried pastry balls stuffed with a fresh, seasonal green pigeon peas (tuvar lilva) filling." },
+      { name: "Lasaniya Batata", image: "https://cdn1.foodviva.com/static-content/food-images/gujarati-recipes/lasaniya-batata-recipe-spicy-baby-potatoes-with-garlic/lasaniya-batata-recipe-spicy-baby-potatoes-with-garlic.jpg?auto=format&fit=crop&w=800&q=80", desc: "Baby potatoes simmered in a fierce, red chili and heavy garlic sauce." },
+      { name: "Jeera Rice", image: "https://delishbite.in/wp-content/uploads/2023/07/Blog_1-3-500x500.jpg?crop=1?auto=format&fit=crop&w=800&q=80", desc: "Fluffy basmati rice tempered with roasted cumin seeds and fresh coriander." },
+      { name: "Churma Ladoo", image: "https://www.cookingcarnival.com/wp-content/uploads/2021/09/Churma-ladoo-recipe.jpg?auto=format&fit=crop&w=800&q=80", desc: "Crushed, fried wheat dough mixed with ghee and jaggery, rolled into delicious festive spheres." }
     ]
   },
   { id: "wv5", type: "veg", name: "Premium Paneer Banquet", price: 1100, items: [
-      { name: "Khandvi", image: "https://images.unsplash.com/photo-1603360946369-dc9bb6258143?auto=format&fit=crop&w=800&q=80", desc: "Thinly rolled bite-sized pieces garnished with coconut." },
-      { name: "Paneer Butter Masala", image: "https://images.unsplash.com/photo-1613292443284-8d10ef9383fe?auto=format&fit=crop&w=800&q=80", desc: "Soft paneer cubes immersed in a rich tomato gravy." },
-      { name: "Veg Pulao", image: "https://images.unsplash.com/photo-1631515243349-e0cb75fb8d3a?auto=format&fit=crop&w=800&q=80", desc: "Fragrant basmati rice tossed with fresh green peas." },
-      { name: "Kesar Shrikhand", image: "https://images.unsplash.com/photo-1621361019047-98319f390886?auto=format&fit=crop&w=800&q=80", desc: "Thick, strained yogurt flavored with saffron threads." }
+      { name: "Khandvi", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRa2ZMAFfN-rBcwL-bp9R1iJUhoHO0v6DANIw&s", desc: "Thin, tightly rolled bite-sized pieces made from gram flour and yogurt, garnished with fresh coconut and cilantro." },
+      { name: "Paneer Butter Masala", image: "https://myfoodstory.com/wp-content/uploads/2021/07/restaurant-style-paneer-butter-masala-2-500x500.jpg?auto=format&fit=crop&w=800&q=80", desc: "Soft cubes of paneer immersed in a rich, creamy, and mildly sweet tomato gravy." },
+      { name: "Veg Pulao", image: "https://www.indianveggiedelight.com/wp-content/uploads/2019/07/veg-pulao-featured-500x500.jpg?auto=format&fit=crop&w=800&q=80", desc: "Light, fragrant basmati rice tossed with green peas, carrots, and french beans." },
+      { name: "Kesar Shrikhand", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQeW3v_MKIkaFmnSOhzBkp0SJHQGBNz2uut7g&s?auto=format&fit=crop&w=800&q=80", desc: "Thick, strained yogurt sweetened and flavored deeply with saffron threads and cardamom." }
     ]
   },
   { id: "wv6", type: "veg", name: "The Cashew Delight", price: 1150, items: [
-      { name: "Mix Veg Samosa", image: "https://images.unsplash.com/photo-1539252554454-31d626bd57b8?auto=format&fit=crop&w=800&q=80", desc: "Classic flaky pastry filled with spiced potatoes." },
-      { name: "Kaju Curry", image: "https://images.unsplash.com/photo-1593560708920-61dd98c46a4e?auto=format&fit=crop&w=800&q=80", desc: "Roasted whole cashews in a thick brown gravy." },
-      { name: "Dal Dhokli", image: "https://images.unsplash.com/photo-1633945274405-b6c8069047b0?auto=format&fit=crop&w=800&q=80", desc: "Spiced wheat pieces simmered in tuvar dal." },
-      { name: "Kopra Pak", image: "https://images.unsplash.com/photo-1589113103553-5384496ff27b?auto=format&fit=crop&w=800&q=80", desc: "Soft, moist coconut fudge lightly flavored." }
+      { name: "Mix Veg Samosa", image: "https://vadilalglobal.com/cdn/shop/files/Mixed_Veg_Samosa.jpg?v=1724914627&width=1946?auto=format&fit=crop&w=800&q=80", desc: "Classic flaky pastry filled with a savory mixture of spiced potatoes, peas, and carrots." },
+      { name: "Kaju Curry", image: "https://cdn2.foodviva.com/static-content/food-images/curry-recipes/kaju-curry/kaju-curry.jpg?auto=format&fit=crop&w=800&q=80", desc: "Roasted whole cashews in a thick, brown onion and tomato base with warming spices." },
+      { name: "Dal Dhokli", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRAUTQ6JYebLSdaR-J8G6FPRNff-qKJT6-anA&s?auto=format&fit=crop&w=800&q=80", desc: "A comforting Gujarati classic. Spiced wheat flour pieces simmered in a sweet, sour, and spicy tuvar dal." },
+      { name: "Kopra Pak", image: "https://www.chefkunalkapur.com/wp-content/uploads/2024/10/mohanthal-1300x731.jpg?v=1730169543?auto=format&fit=crop&w=800&q=80", desc: "A soft, moist coconut fudge flavored lightly with saffron and cardamom." }
     ]
   },
   { id: "wv7", type: "veg", name: "Nawab's Veg Dastarkhwan", price: 1050, items: [
-      { name: "Dahi Vada", image: "https://images.unsplash.com/photo-1626132646529-5aa71394c98a?auto=format&fit=crop&w=800&q=80", desc: "Soft lentil dumplings soaked in creamy sweet yogurt." },
-      { name: "Malai Kofta", image: "https://images.unsplash.com/photo-1545231027-63b6f2a3c2dd?auto=format&fit=crop&w=800&q=80", desc: "Deep-fried dumplings in a luxurious cashew gravy." },
-      { name: "Jeera Rice", image: "https://images.unsplash.com/photo-1563379091339-03b21bc4a4f8?auto=format&fit=crop&w=800&q=80", desc: "Fluffy basmati rice tempered with roasted cumin." },
-      { name: "Churma Ladoo", image: "https://images.unsplash.com/photo-1596797038583-18a68a637311?auto=format&fit=crop&w=800&q=80", desc: "Fried wheat dough rolled into festive spheres." }
+      { name: "Dahi Vada", image: "https://ministryofcurry.com/wp-content/uploads/2016/08/Dahi-Vada-5-500x375.jpg?auto=format&fit=crop&w=800&q=80", desc: "Soft lentil dumplings soaked in creamy, whipped sweet yogurt, topped with tamarind and mint chutneys." },
+      { name: "Malai Kofta", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsT8TUD-NzEQeESGXCTvbEFMbcMp-heDW-Kw&s?auto=format&fit=crop&w=800&q=80", desc: "Deep-fried potato and paneer dumplings served in a luxurious, white cashew gravy." },
+      { name: "Jeera Rice", image: "https://delishbite.in/wp-content/uploads/2023/07/Blog_1-3-500x500.jpg?crop=1?auto=format&fit=crop&w=800&q=80", desc: "Fluffy basmati rice tempered with roasted cumin seeds and fresh coriander." },
+      { name: "Churma Ladoo", image: "https://www.cookingcarnival.com/wp-content/uploads/2021/09/Churma-ladoo-recipe.jpg?auto=format&fit=crop&w=800&q=80", desc: "Crushed, fried wheat dough mixed with ghee and jaggery, rolled into delicious festive spheres." }
     ]
   },
   { id: "wv8", type: "veg", name: "Saurashtra Special", price: 900, items: [
-      { name: "Idada", image: "https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=800&q=80", desc: "White steamed dhokla dusted with black pepper." },
-      { name: "Bharela Bhinda", image: "https://images.unsplash.com/photo-1601303582555-538600d1641b?auto=format&fit=crop&w=800&q=80", desc: "Whole okra stuffed with a roasted besan blend." },
-      { name: "Surti Dal", image: "https://images.unsplash.com/photo-1512058560366-cd2429ff5c7c?auto=format&fit=crop&w=800&q=80", desc: "A sweet and tangy pigeon pea lentil preparation." },
-      { name: "Basundi", image: "https://images.unsplash.com/photo-1589302168068-964664d93dc0?auto=format&fit=crop&w=800&q=80", desc: "Sweetened milk served chilled with almonds." }
+      { name: "Idada (White Dhokla)", image: "https://i.ytimg.com/vi/Oz34j5---iQ/maxresdefault.jpg", desc: "Traditional white steamed dhokla made from a fermented batter of rice and urad dal, heavily dusted with black pepper." },
+      { name: "Bharela Bhinda", image: "https://cdn.indiaphile.info/wp-content/uploads/2023/02/stp-bharela-bhinda-nu-shaak-8150.jpg?width=1200&format=webp?auto=format&fit=crop&w=800&q=80", desc: "Whole okra stuffed with a roasted blend of besan, peanuts, coriander powder, and jaggery." },
+      { name: "Surti Dal", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTNEg2o5GT3aGcMWf580SWOTNz-vy5VM-S0yw&s?auto=format&fit=crop&w=800&q=80", desc: "A sweet and tangy pigeon pea lentil preparation tempered with peanuts, tomatoes, and kokum." },
+      { name: "Basundi", image: "https://www.sharmispassions.com/wp-content/uploads/2014/12/basundi4.jpg?auto=format&fit=crop&w=800&q=80", desc: "Sweetened, dense milk boiled down to a creamy texture, served chilled with sliced almonds." }
     ]
   },
   { id: "wv9", type: "veg", name: "Green Garden Feast", price: 980, items: [
-      { name: "Patra", image: "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=800&q=80", desc: "Colocasia leaves smeared with sweet & tangy paste." },
-      { name: "Palak Paneer", image: "https://images.unsplash.com/photo-1603894584115-f73f2ec851ad?auto=format&fit=crop&w=800&q=80", desc: "Fresh spinach puree cooked with paneer cubes." },
-      { name: "Veg Pulao", image: "https://images.unsplash.com/photo-1631515243349-e0cb75fb8d3a?auto=format&fit=crop&w=800&q=80", desc: "Basmati rice tossed with seasonal vegetables." },
-      { name: "Dudhi Halwa", image: "https://images.unsplash.com/photo-1621361019047-98319f390886?auto=format&fit=crop&w=800&q=80", desc: "Bottle gourd slow-cooked with milk and khoya." }
+      { name: "Patra", image: "https://i.ndtvimg.com/i/2018-02/patra_620x330_51518071961.jpg?auto=format&fit=crop&w=800&q=80", desc: "Colocasia leaves smeared with a sweet, spicy, and tangy gram flour paste, rolled, steamed, and sliced." },
+      { name: "Palak Paneer", image: "https://www.cookwithmanali.com/wp-content/uploads/2019/08/Palak-Paneer.jpg?auto=format&fit=crop&w=800&q=80", desc: "Fresh spinach puree cooked with ginger, garlic, and paneer cubes, finished with cream." },
+      { name: "Veg Pulao", image: "https://www.indianveggiedelight.com/wp-content/uploads/2019/07/veg-pulao-featured-500x500.jpg?auto=format&fit=crop&w=800&q=80", desc: "Light, fragrant basmati rice tossed with green peas, carrots, and french beans." },
+      { name: "Kesar Shrikhand", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQeW3v_MKIkaFmnSOhzBkp0SJHQGBNz2uut7g&s?auto=format&fit=crop&w=800&q=80", desc: "Thick, strained yogurt sweetened and flavored deeply with saffron threads and cardamom." }
     ]
   },
   { id: "wv10", type: "veg", name: "Sweet & Savory Mix", price: 1020, items: [
-      { name: "Kele Ki Tikki", image: "https://images.unsplash.com/photo-1524331155111-e9e99677020d?auto=format&fit=crop&w=800&q=80", desc: "Pan-fried patties made from raw bananas." },
-      { name: "Kaju Karela", image: "https://images.unsplash.com/photo-1588166524941-3bf61a9c41db?auto=format&fit=crop&w=800&q=80", desc: "Bitter gourd cooked with premium whole cashews." },
-      { name: "Kadhi Khichdi", image: "https://images.unsplash.com/photo-1626500155537-883777587788?auto=format&fit=crop&w=800&q=80", desc: "Simple khichdi served with spiced yogurt kadhi." },
-      { name: "Surti Ghari", image: "https://images.unsplash.com/photo-1589113103553-5384496ff27b?auto=format&fit=crop&w=800&q=80", desc: "Rich disc made of dough, mawa, and ghee." }
+      { name: "Kele Ki Tikki", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSEfZdF72oEPAhY8sECacNl85Ry3wV0saDGaA&s?auto=format&fit=crop&w=800&q=80", desc: "Pan-fried patties made from raw bananas and subtle fasting-friendly spices." },
+      { name: "Kaju Karela", image: "https://www.nehascookbook.com/wp-content/uploads/2024/05/Kaju-karela-shaak-WS-1.jpg?auto=format&fit=crop&w=800&q=80", desc: "Bitter gourd roundels cooked with premium whole cashews to balance the bitterness with a rich sweetness." },
+      { name: "Kadhi Khichdi", image: "https://www.nehascookbook.com/wp-content/uploads/2022/10/Bardoli-khichdi-WS.jpg?auto=format&fit=crop&w=800&q=80", desc: "Simple yellow lentil and rice khichdi served alongside a warm, spiced yogurt and besan kadhi." },
+      { name: "Surti Ghari", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQAXXJN8n0doghkEc2vuHw0ZlI068p1HsCJag&s?auto=format&fit=crop&w=800&q=80", desc: "The pinnacle of Surat's sweets. A rich disc made of puri dough, mawa, ghee, and sugar, packed with nuts." }
     ]
   },
   { id: "wv11", type: "veg", name: "The Grand Marwari", price: 950, items: [
-      { name: "Mix Veg Samosa", image: "https://images.unsplash.com/photo-1539252554454-31d626bd57b8?auto=format&fit=crop&w=800&q=80", desc: "Flaky pastry filled with a savory mixture." },
-      { name: "Veg Kadai", image: "https://images.unsplash.com/photo-1601303582555-538600d1641b?auto=format&fit=crop&w=800&q=80", desc: "Mixed vegetables tossed in an iron wok." },
-      { name: "Rajwadi Khichdi", image: "https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=800&q=80", desc: "Vegetable-loaded khichdi tempered with ghee." },
-      { name: "Mohanthal", image: "https://images.unsplash.com/photo-1596797038583-18a68a637311?auto=format&fit=crop&w=800&q=80", desc: "Gram flour fudge with a granular texture." }
+      { name: "Mix Veg Samosa", image: "https://vadilalglobal.com/cdn/shop/files/Mixed_Veg_Samosa.jpg?v=1724914627&width=1946?auto=format&fit=crop&w=800&q=80", desc: "Classic flaky pastry filled with a savory mixture of spiced potatoes, peas, and carrots." },
+      { name: "Veg Kadai", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQWbIIYy4Ri82T_qyPotNQUcMNDuTZpeYIWaA&s?auto=format&fit=crop&w=800&q=80", desc: "Mixed seasonal vegetables tossed in an iron wok with ground coriander and dry red chilies." },
+      { name: "Rajwadi Khichdi", image: "https://i.ytimg.com/vi/RPRORGFaC3o/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLDKcIY1dWtK1cgWuk80HRQhpPifoQ?auto=format&fit=crop&w=800&q=80", desc: "A rich, vegetable-loaded khichdi tempered generously with whole spices and pure desi ghee." },
+      { name: "Mohanthal", image: "https://www.sharmispassions.com/wp-content/uploads/2014/12/basundi4.jpg?auto=format&fit=crop&w=800&q=80", desc: "Traditional gram flour fudge enriched with generous amounts of ghee, offering a granular, melt-in-mouth texture." }
     ]
   },
   { id: "wv12", type: "veg", name: "Ultimate Wedding Thali", price: 1200, items: [
-      { name: "Surti Locho", image: "https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?auto=format&fit=crop&w=800&q=80", desc: "Steamed gram flour served with signature masala." },
-      { name: "Paneer Butter Masala", image: "https://images.unsplash.com/photo-1613292443284-8d10ef9383fe?auto=format&fit=crop&w=800&q=80", desc: "Soft cubes of paneer immersed in rich tomato gravy." },
-      { name: "Dal Dhokli", image: "https://images.unsplash.com/photo-1633945274405-b6c8069047b0?auto=format&fit=crop&w=800&q=80", desc: "Spiced wheat pieces in sweet and sour tuvar dal." },
-      { name: "Kesar Shrikhand", image: "https://images.unsplash.com/photo-1621361019047-98319f390886?auto=format&fit=crop&w=800&q=80", desc: "Thick yogurt heavily flavored with saffron." }
+      { name: "Surti Locho", image: "https://s3-ap-south-1.amazonaws.com/betterbutterbucket-silver/taqizaki-khan20180620192231869.jpeg", desc: "A Surat specialty. Steamed, spiced gram flour base served hot with oil, butter, and a signature locho masala." },
+      { name: "Paneer Butter Masala", image: "https://myfoodstory.com/wp-content/uploads/2021/07/restaurant-style-paneer-butter-masala-2-500x500.jpg?auto=format&fit=crop&w=800&q=80", desc: "Soft cubes of paneer immersed in a rich, creamy, and mildly sweet tomato gravy." },
+      { name: "Dal Dhokli", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRAUTQ6JYebLSdaR-J8G6FPRNff-qKJT6-anA&s?auto=format&fit=crop&w=800&q=80", desc: "A comforting Gujarati classic. Spiced wheat flour pieces simmered in a sweet, sour, and spicy tuvar dal." },
+      { name: "Kesar Shrikhand", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQeW3v_MKIkaFmnSOhzBkp0SJHQGBNz2uut7g&s?auto=format&fit=crop&w=800&q=80", desc: "Thick, strained yogurt sweetened and flavored deeply with saffron threads and cardamom." }
     ]
   },
 
   // --- NON-VEG COMBOS ---
   { id: "wn1", type: "nonveg", name: "The Royal Bhatiyara Feast", price: 1450, items: [
-      { name: "Malai Tikka", image: "https://images.unsplash.com/photo-1626074353765-517a681e40be?auto=format&fit=crop&w=800&q=80", desc: "Chicken chunks marinated in a velvety cashew paste." },
-      { name: "Mutton Dum Biryani", image: "https://images.unsplash.com/photo-1563379091339-03b21bc4a4f8?auto=format&fit=crop&w=800&q=80", desc: "Meat and rice slow-cooked in a heavy copper handi." },
-      { name: "Chicken Angara", image: "https://images.unsplash.com/photo-1603894584115-f73f2ec851ad?auto=format&fit=crop&w=800&q=80", desc: "A fiery red gravy carrying the fire of Surat." },
-      { name: "Jarda", image: "https://images.unsplash.com/photo-1589302168068-964664d93dc0?auto=format&fit=crop&w=800&q=80", desc: "Sweet, saffron-flavored rice loaded with premium nuts." }
+      { name: "Malai Tikka", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQDHAI_bbuCZQ0ws2ojtmyxM0vrFkIMXpD6GQ&s?auto=format&fit=crop&w=800&q=80", desc: "A royal Bhatiyara classic. Tender chicken chunks are marinated for 12 hours in a velvety blend of heavy cream, hung curd, and cashew paste." },
+      { name: "Mutton Dum Biryani", image: "https://www.cubesnjuliennes.com/wp-content/uploads/2021/03/Best-Mutton-Biryani-Recipe.jpg?auto=format&fit=crop&w=800&q=80", desc: "The ultimate celebration of meat and rice. Slow-cooked in a heavy copper handi." },
+      { name: "Chicken Angara", image: "https://i.ytimg.com/vi/jrAh2aUpniA/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLBXU8g5w01i799lj360xFJVhVBN7g?auto=format&fit=crop&w=800&q=80", desc: "A fiery red, spicy gravy that carries the 'Angar' (fire) of Surat." },
+      { name: "Chicken Seekh Kebab", image: "https://i.ytimg.com/vi/hA3-yD23npM/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLCoNma_2OAQE0o8y8D5rbspFuvIiA?auto=format&fit=crop&w=800&q=80", desc: "Minced chicken seasoned with roasted cumin and fresh coriander, skewered and grilled." }
     ]
   },
   { id: "wn2", type: "nonveg", name: "Nizami Dastarkhwan", price: 1380, items: [
-      { name: "Golden Tikka", image: "https://images.unsplash.com/photo-1603360946369-dc9bb6258143?auto=format&fit=crop&w=800&q=80", desc: "Infused with high-grade saffron and turmeric." },
-      { name: "Chicken Tikka Biryani", image: "https://images.unsplash.com/photo-1589302168068-964664d93dc0?auto=format&fit=crop&w=800&q=80", desc: "Smoky tandoor-roasted chicken layered with rice." },
-      { name: "Butter Chicken", image: "https://images.unsplash.com/photo-1588166524941-3bf61a9c41db?auto=format&fit=crop&w=800&q=80", desc: "Shredded tandoori chicken in a butter cream sauce." },
-      { name: "Sevio ka Shola", image: "https://images.unsplash.com/photo-1589113103553-5384496ff27b?auto=format&fit=crop&w=800&q=80", desc: "Vermicelli cooked in thickened milk and cardamom." }
+      { name: "Golden Tikka", image: "https://dukaan.b-cdn.net/700x700/webp/295487/35a1cb46-27e2-4ab1-8022-e4cb731de3d9.png?auto=format&fit=crop&w=800&q=80", desc: "Infused with high-grade saffron and fresh turmeric, this tikka offers a vibrant hue and a warm, earthy flavor profile." },
+      { name: "Chicken Tikka Biryani", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTRuUB5uYLdSdfZxJa9s-vs63SzmT90BLUOQ&s?auto=format&fit=crop&w=800&q=80", desc: "A smoky delight where tandoor-roasted chicken tikkas are layered with biryani rice." },
+      { name: "Butter Chicken", image: "https://www.indianhealthyrecipes.com/wp-content/uploads/2023/04/butter-chicken-recipe-500x500.jpg?auto=format&fit=crop&w=800&q=80", desc: "The timeless classic. Shredded tandoori chicken simmered in a tomato, butter, and cream sauce." },
+      { name: "Cheese Chicken Roll", image: "https://i.ytimg.com/vi/-xy3pLz2QWg/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLALHkJz7hI-9bjHT__MtJHgQTGPsA?auto=format&fit=crop&w=800&q=80", desc: "Crispy golden crust wrapping a molten blend of premium cheese and spicy chicken chunks." }
     ]
   },
   { id: "wn3", type: "nonveg", name: "Kashmiri Wazwan", price: 1550, items: [
-      { name: "Kashmiri Tikka", image: "https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=800&q=80", desc: "Aromatic preparation using Kashmiri red chilies." },
-      { name: "Mutton Yakhni Pulav", image: "https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=800&q=80", desc: "Meat and rice cooked in clarified stock." },
-      { name: "Golden Chicken", image: "https://images.unsplash.com/photo-1545231027-63b6f2a3c2dd?auto=format&fit=crop&w=800&q=80", desc: "Signature white gravy enriched with almonds." },
-      { name: "Chawal ka Shola", image: "https://images.unsplash.com/photo-1596797038583-18a68a637311?auto=format&fit=crop&w=800&q=80", desc: "Rich rice pudding slow-reduced to creamy perfection." }
+      { name: "Kashmiri Tikka", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR--a-wg8SSwtuACNGsDlvzIdb5yf4awHvkHw&s?auto=format&fit=crop&w=800&q=80", desc: "A mild yet aromatic preparation using authentic Kashmiri red chilies and mace." },
+      { name: "Mutton Seekh Biryani", image: "https://i.ytimg.com/vi/HoHgZLFourY/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLD31Gz3OIPXeKgCw8HNXFxXTDDn9g?auto=format&fit=crop&w=800&q=80", desc: "Juicy mutton seekh kebabs are nestled within layers of saffron-infused rice." },
+      { name: "Golden Chicken", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTRb0NZ1TQwkOTAwqUpggy4yLbd5O-8O3kclw&s?auto=format&fit=crop&w=800&q=80", desc: "Our signature white gravy, enriched with cream, almonds, and saffron." },
+      { name: "Mutton Cutlet", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS1YTjZihzPs8KxN6F8c37D8iRRbFbiNwjMyg&s?auto=format&fit=crop&w=800&q=80", desc: "Traditional Bhatiyara mutton cutlets, hand-pounded and seasoned with fresh mint." }
     ]
   },
   { id: "wn4", type: "nonveg", name: "Surti Non-Veg Heritage", price: 1420, items: [
-      { name: "Machhi Masal Tikka", image: "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=800&q=80", desc: "Fresh fish fillets marinated in a secret blend." },
-      { name: "Chicken Dum Biryani", image: "https://images.unsplash.com/photo-1543339308-43e59d6b73a6?auto=format&fit=crop&w=800&q=80", desc: "Classic chicken and rice in a sealed dough handi." },
-      { name: "Machhi Masala Chicken", image: "https://images.unsplash.com/photo-1613292443284-8d10ef9383fe?auto=format&fit=crop&w=800&q=80", desc: "Tangy green-masala blend applied to chicken." },
-      { name: "Thuli", image: "https://images.unsplash.com/photo-1621361019047-98319f390886?auto=format&fit=crop&w=800&q=80", desc: "Cracked wheat dessert cooked with jaggery." }
+      { name: "Machhi Masal Tikka", image: "https://www.indianhealthyrecipes.com/wp-content/uploads/2022/06/chicken-tikka-masala-recipe.jpg?auto=format&fit=crop&w=800&q=80", desc: "Fresh river fish fillets marinated in a robust Bhatiyara 'masal'—a secret blend of 21 spices." },
+      { name: "Chicken Dum Biryani", image: "https://vismaifood.com/storage/app/uploads/public/e12/7b7/127/thumb__1200_0_0_0_auto.jpg?auto=format&fit=crop&w=800&q=80", desc: "Classic chicken and basmati rice slow-cooked in a sealed dough handi." },
+      { name: "Machhi Masala Chicken", image: "https://images.unsplash.com/photo-1613292443284-8d10ef9383fe?auto=format&fit=crop&w=800&q=80", desc: "Tangy and spicy green-masala blend applied to tender chicken pieces." },
+      { name: "Tiranga Roll", image: "https://i.ytimg.com/vi/IgOe46v0Dik/maxresdefault.jpg?auto=format&fit=crop&w=800&q=80", desc: "Three distinct layers of chicken mince rolled together and lightly fried." }
     ]
   },
   { id: "wn5", type: "nonveg", name: "Lahori Darbar", price: 1580, items: [
-      { name: "Pakistani Tikka", image: "https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?auto=format&fit=crop&w=800&q=80", desc: "Inspired by street flavors, heavily spiced." },
-      { name: "Mutton Seekh Biryani", image: "https://images.unsplash.com/photo-1631515243349-e0cb75fb8d3a?auto=format&fit=crop&w=800&q=80", desc: "Juicy seekh kebabs nestled within saffron rice." },
-      { name: "Chicken Kadai", image: "https://images.unsplash.com/photo-1601303582555-538600d1641b?auto=format&fit=crop&w=800&q=80", desc: "Cooked in an iron wok with bell peppers." },
-      { name: "Dudhi Ka Halwa", image: "https://images.unsplash.com/photo-1589113103553-5384496ff27b?auto=format&fit=crop&w=800&q=80", desc: "Bottle gourd slow-cooked with whole milk." }
+      { name: "Hindustani Tikka", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSCPq4FKrNc6gICL3O6sHOiMKpzno1rWxiLGA&s?auto=format&fit=crop&w=800&q=80", desc: "Inspired by the bold street flavors of Lahore, heavily spiced with crushed coriander." },
+      { name: "Mutton Seekh Biryani", image: "https://i.ytimg.com/vi/HoHgZLFourY/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLD31Gz3OIPXeKgCw8HNXFxXTDDn9g?auto=format&fit=crop&w=800&q=80", desc: "Juicy mutton seekh kebabs are nestled within layers of saffron-infused rice." },
+      { name: "Chicken Kadai", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRiu7hpTeKhbkOWrIrRWActdk8E40NkAuAMxQ&s?auto=format&fit=crop&w=800&q=80", desc: "Cooked in a traditional iron wok with chunks of bell peppers and onions." },
+      { name: "Schezwan Tangdi", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSt_LImNWFGJA6BPezf-fZ6taT-CnQ9_ThreQ&s?auto=format&fit=crop&w=800&q=80", desc: "Jumbo drumsticks marinated overnight and finished in a high-flame wok." }
     ]
   },
   { id: "wn6", type: "nonveg", name: "Fusion Fiesta", price: 1350, items: [
-      { name: "Schezwan Tikka", image: "https://images.unsplash.com/photo-1524331155111-e9e99677020d?auto=format&fit=crop&w=800&q=80", desc: "Contemporary Surat fusion where tradition meets the orient." },
-      { name: "Italian Chicken Biryani", image: "https://images.unsplash.com/photo-1512058560366-cd2429ff5c7c?auto=format&fit=crop&w=800&q=80", desc: "A global fusion featuring Mediterranean herbs." },
-      { name: "Chicken Patiyala", image: "https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?auto=format&fit=crop&w=800&q=80", desc: "Rich yellow gravy hidden under a lacy egg omelet." },
-      { name: "Gajar Ka Halwa", image: "https://images.unsplash.com/photo-1621361019047-98319f390886?auto=format&fit=crop&w=800&q=80", desc: "Seasonal red carrots braised in desi ghee." }
+      { name: "Schezwan Tikka", image: "https://img-cdn.publive.online/fit-in/1200x675/filters:format(webp)/sanjeev-kapoor/media/post_banners/ff9dc23dcc4beb1df4c260442df74561dc8f56b428e81cdb0aef6eba35ba2ca8.jpg?auto=format&fit=crop&w=800&q=80", desc: "A contemporary Surat fusion where tradition meets the orient." },
+      { name: "Italian Chicken Biryani", image: "https://i.ytimg.com/vi/Pv-OHu4oR6M/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLAuQvk8oqb9phdmrg-ABiBGcSapeg?auto=format&fit=crop&w=800&q=80", desc: "A global fusion featuring Mediterranean herbs cooked with olive oil alongside traditional spices." },
+      { name: "Chicken Patiyala", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRxysSw0LK5dbaNWrU31RQ0EOLvS4lGdR7CdQ&s?auto=format&fit=crop&w=800&q=80", desc: "A rich, cashew-based yellow gravy hidden under a thin, lacy egg omelet." },
+      { name: "Cheese Chicken Roll", image: "https://i.ytimg.com/vi/-xy3pLz2QWg/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLALHkJz7hI-9bjHT__MtJHgQTGPsA?auto=format&fit=crop&w=800&q=80", desc: "Crispy golden crust wrapping a molten blend of premium cheese and spicy chicken chunks." }
     ]
   },
   { id: "wn7", type: "nonveg", name: "The Pepper Trail", price: 1480, items: [
-      { name: "Makhhan Mari Tangdi", image: "https://images.unsplash.com/photo-1527477396000-e27163b481c2?auto=format&fit=crop&w=800&q=80", desc: "Drumsticks glazed with clarified butter and black pepper." },
-      { name: "Chicken Pulao", image: "https://images.unsplash.com/photo-1631515243349-e0cb75fb8d3a?auto=format&fit=crop&w=800&q=80", desc: "Basmati rice tossed with chicken chunks." },
-      { name: "Chicken Kophta Curry", image: "https://images.unsplash.com/photo-1593560708920-61dd98c46a4e?auto=format&fit=crop&w=800&q=80", desc: "Hand-rolled meatballs simmered in dark brown gravy." },
-      { name: "Akhrot Ka Halwa", image: "https://images.unsplash.com/photo-1596797038583-18a68a637311?auto=format&fit=crop&w=800&q=80", desc: "Artisanal walnut paste halwa cooked to perfection." }
+      { name: "Makhhan Mari Tangdi", image: "https://i.ytimg.com/vi/7fIysz9p9NM/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLD9Kb7XTnsADUHQbRhdrZdJRxAlqg?auto=format&fit=crop&w=800&q=80", desc: "Succulent chicken drumsticks glazed with clarified butter (Makhhan) and cracked Tellicherry black pepper." },
+      { name: "Chicken Dum Biryani", image: "https://vismaifood.com/storage/app/uploads/public/e12/7b7/127/thumb__1200_0_0_0_auto.jpg?auto=format&fit=crop&w=800&q=80", desc: "Classic chicken and basmati rice slow-cooked in a sealed dough handi." },
+      { name: "Chicken Kophta Curry", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTrSg5M2g7qmZMwZv6Wi4HfuLYf9d557JADmQ&s?auto=format&fit=crop&w=800&q=80", desc: "Delicate, hand-rolled chicken meatballs simmered in a rich, dark brown onion gravy." },
+      { name: "Irani Tangdi", image: "https://i.ytimg.com/vi/frvi3CLk3XA/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLCuaLwbpWe95uydJG-ctj4R5MXWBw?auto=format&fit=crop&w=800&q=80", desc: "A heritage recipe featuring a marinade of pomegranate molasses and dried herbs." }
     ]
   },
   { id: "wn8", type: "nonveg", name: "Persian Banquet", price: 1400, items: [
-      { name: "Irani Tangdi", image: "https://images.unsplash.com/photo-1610057099443-fde8c4d50f91?auto=format&fit=crop&w=800&q=80", desc: "Marinade of pomegranate molasses and dried herbs." },
-      { name: "Mutton Khichda", image: "https://images.unsplash.com/photo-1505253149613-11b847673558?auto=format&fit=crop&w=800&q=80", desc: "A slow-cooked porridge of meat, lentils, and wheat." },
-      { name: "Butter Chicken", image: "https://images.unsplash.com/photo-1588166524941-3bf61a9c41db?auto=format&fit=crop&w=800&q=80", desc: "Shredded tandoori chicken simmered in creamy sauce." },
-      { name: "Jarda", image: "https://images.unsplash.com/photo-1589302168068-964664d93dc0?auto=format&fit=crop&w=800&q=80", desc: "Sweet, saffron-flavored rice cooked with nuts." }
+      { name: "Irani Tangdi", image: "https://i.ytimg.com/vi/frvi3CLk3XA/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLCuaLwbpWe95uydJG-ctj4R5MXWBw?auto=format&fit=crop&w=800&q=80", desc: "A heritage recipe featuring a marinade of pomegranate molasses and dried herbs." },
+      { name: "Mutton Dum Biryani", image: "https://www.cubesnjuliennes.com/wp-content/uploads/2021/03/Best-Mutton-Biryani-Recipe.jpg?auto=format&fit=crop&w=800&q=80", desc: "The ultimate celebration of meat and rice. Slow-cooked in a heavy copper handi." },
+      { name: "Butter Chicken", image: "https://www.indianhealthyrecipes.com/wp-content/uploads/2023/04/butter-chicken-recipe-500x500.jpg?auto=format&fit=crop&w=800&q=80", desc: "The timeless classic. Shredded tandoori chicken simmered in a tomato, butter, and cream sauce." },
+      { name: "Chicken Seekh Kebab", image: "https://i.ytimg.com/vi/hA3-yD23npM/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLCoNma_2OAQE0o8y8D5rbspFuvIiA?auto=format&fit=crop&w=800&q=80", desc: "Minced chicken seasoned with roasted cumin and fresh coriander, skewered and grilled." }
     ]
   },
   { id: "wn9", type: "nonveg", name: "Nawab's Choice", price: 1600, items: [
-      { name: "Tiranga Roll", image: "https://images.unsplash.com/photo-1539252554454-31d626bd57b8?auto=format&fit=crop&w=800&q=80", desc: "Three layers of chicken mince lightly fried." },
-      { name: "Nargisi Kofta Biryani", image: "https://images.unsplash.com/photo-1645177623570-5283995804bc?auto=format&fit=crop&w=800&q=80", desc: "Biryani served with boiled eggs encased in meat." },
-      { name: "Chicken Angara", image: "https://images.unsplash.com/photo-1603894584115-f73f2ec851ad?auto=format&fit=crop&w=800&q=80", desc: "Fiery red gravy carrying a deep smoky undertone." },
-      { name: "Sevio ka Shola", image: "https://images.unsplash.com/photo-1589113103553-5384496ff27b?auto=format&fit=crop&w=800&q=80", desc: "Vermicelli in thickened milk with silver leaf." }
+      { name: "Tiranga Roll", image: "https://i.ytimg.com/vi/IgOe46v0Dik/maxresdefault.jpg?auto=format&fit=crop&w=800&q=80", desc: "Three distinct layers of chicken mince rolled together and lightly fried." },
+      { name: "Nargisi Kofta Biryani", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSMLuo6AWTV4L01ok8peBmxC-UZf3TXwW79ZQ&s?auto=format&fit=crop&w=800&q=80", desc: "Royal biryani served with Nargisi Koftas—hard-boiled eggs encased in spiced minced meat." },
+      { name: "Chicken Angara", image: "https://i.ytimg.com/vi/jrAh2aUpniA/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLBXU8g5w01i799lj360xFJVhVBN7g?auto=format&fit=crop&w=800&q=80", desc: "A fiery red, spicy gravy that carries the 'Angar' (fire) of Surat." },
+      { name: "Malai Tikka", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQDHAI_bbuCZQ0ws2ojtmyxM0vrFkIMXpD6GQ&s?auto=format&fit=crop&w=800&q=80", desc: "A royal Bhatiyara classic. Tender chicken chunks are marinated for 12 hours in a velvety blend of heavy cream, hung curd, and cashew paste." }
     ]
   },
   { id: "wn10", type: "nonveg", name: "Cheesy Delight", price: 1450, items: [
-      { name: "Cheese Chicken Roll", image: "https://images.unsplash.com/photo-1612195583950-b8fd34c87093?auto=format&fit=crop&w=800&q=80", desc: "Crispy crust wrapping molten cheese and chicken." },
-      { name: "Chicken Tikka Biryani", image: "https://images.unsplash.com/photo-1589302168068-964664d93dc0?auto=format&fit=crop&w=800&q=80", desc: "A smoky delight with tandoor-roasted chicken." },
-      { name: "Golden Chicken", image: "https://images.unsplash.com/photo-1545231027-63b6f2a3c2dd?auto=format&fit=crop&w=800&q=80", desc: "Signature white gravy enriched with cream." },
-      { name: "Chawal ka Shola", image: "https://images.unsplash.com/photo-1596797038583-18a68a637311?auto=format&fit=crop&w=800&q=80", desc: "Rich rice pudding slow-reduced to a cream." }
+      { name: "Cheese Chicken Roll", image: "https://i.ytimg.com/vi/-xy3pLz2QWg/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLALHkJz7hI-9bjHT__MtJHgQTGPsA?auto=format&fit=crop&w=800&q=80", desc: "Crispy golden crust wrapping a molten blend of premium cheese and spicy chicken chunks." },
+      { name: "Chicken Tikka Biryani", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTRuUB5uYLdSdfZxJa9s-vs63SzmT90BLUOQ&s?auto=format&fit=crop&w=800&q=80", desc: "A smoky delight where tandoor-roasted chicken tikkas are layered with biryani rice." },
+      { name: "Golden Chicken", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTRb0NZ1TQwkOTAwqUpggy4yLbd5O-8O3kclw&s?auto=format&fit=crop&w=800&q=80", desc: "Our signature white gravy, enriched with cream, almonds, and saffron." },
+      { name: "Chicken Kadai", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRiu7hpTeKhbkOWrIrRWActdk8E40NkAuAMxQ&s?auto=format&fit=crop&w=800&q=80", desc: "Cooked in a traditional iron wok with chunks of bell peppers and onions." }
     ]
   },
   { id: "wn11", type: "nonveg", name: "The Seekh Symphony", price: 1520, items: [
-      { name: "Chicken Seekh Kebab", image: "https://images.unsplash.com/photo-1603962285838-838104440129?auto=format&fit=crop&w=800&q=80", desc: "Minced chicken seasoned with roasted cumin." },
-      { name: "Mutton Seekh Biryani", image: "https://images.unsplash.com/photo-1631515243349-e0cb75fb8d3a?auto=format&fit=crop&w=800&q=80", desc: "Juicy mutton kebabs nestled in saffron rice." },
-      { name: "Chicken Kheema", image: "https://images.unsplash.com/photo-1626500155537-883777587788?auto=format&fit=crop&w=800&q=80", desc: "Spicy minced chicken cooked with green peas." },
-      { name: "Thuli", image: "https://images.unsplash.com/photo-1621361019047-98319f390886?auto=format&fit=crop&w=800&q=80", desc: "Cracked wheat dessert cooked with jaggery and ghee." }
+      { name: "Chicken Seekh Kebab", image: "https://i.ytimg.com/vi/hA3-yD23npM/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLCoNma_2OAQE0o8y8D5rbspFuvIiA?auto=format&fit=crop&w=800&q=80", desc: "Minced chicken seasoned with roasted cumin and fresh coriander, skewered and grilled." },
+      { name: "Mutton Seekh Biryani", image: "https://i.ytimg.com/vi/HoHgZLFourY/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLD31Gz3OIPXeKgCw8HNXFxXTDDn9g?auto=format&fit=crop&w=800&q=80", desc: "Juicy mutton seekh kebabs are nestled within layers of saffron-infused rice." },
+      { name: "Chicken Kophta Curry", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTrSg5M2g7qmZMwZv6Wi4HfuLYf9d557JADmQ&s?auto=format&fit=crop&w=800&q=80", desc: "Delicate, hand-rolled chicken meatballs simmered in a rich, dark brown onion gravy." },
+      { name: "Chicken Patiyala", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRxysSw0LK5dbaNWrU31RQ0EOLvS4lGdR7CdQ&s?auto=format&fit=crop&w=800&q=80", desc: "A rich, cashew-based yellow gravy hidden under a thin, lacy egg omelet." }
     ]
   },
   { id: "wn12", type: "nonveg", name: "Grand Mutton Feast", price: 1700, items: [
-      { name: "Mutton Cutlet", image: "https://images.unsplash.com/photo-1626132646529-5aa71394c98a?auto=format&fit=crop&w=800&q=80", desc: "Hand-pounded cutlets seasoned with fresh mint." },
-      { name: "Mutton Dum Biryani", image: "https://images.unsplash.com/photo-1563379091339-03b21bc4a4f8?auto=format&fit=crop&w=800&q=80", desc: "The ultimate celebration of meat and rice." },
-      { name: "Mutton Yakhni Pulav", image: "https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=800&q=80", desc: "Subtle meat preparation in clarified stock." },
-      { name: "Akhrot Ka Halwa", image: "https://images.unsplash.com/photo-1596797038583-18a68a637311?auto=format&fit=crop&w=800&q=80", desc: "Artisanal walnut paste halwa caramelized to perfection." }
+      { name: "Mutton Cutlet", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS1YTjZihzPs8KxN6F8c37D8iRRbFbiNwjMyg&s?auto=format&fit=crop&w=800&q=80", desc: "Traditional Bhatiyara mutton cutlets, hand-pounded and seasoned with fresh mint." },
+      { name: "Mutton Dum Biryani", image: "https://www.cubesnjuliennes.com/wp-content/uploads/2021/03/Best-Mutton-Biryani-Recipe.jpg?auto=format&fit=crop&w=800&q=80", desc: "The ultimate celebration of meat and rice. Slow-cooked in a heavy copper handi." },
+      { name: "Mutton Seekh Biryani", image: "https://i.ytimg.com/vi/HoHgZLFourY/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLD31Gz3OIPXeKgCw8HNXFxXTDDn9g?auto=format&fit=crop&w=800&q=80", desc: "Juicy mutton seekh kebabs are nestled within layers of saffron-infused rice." },
+      { name: "Chicken Angara", image: "https://i.ytimg.com/vi/jrAh2aUpniA/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLBXU8g5w01i799lj360xFJVhVBN7g?auto=format&fit=crop&w=800&q=80", desc: "A fiery red, spicy gravy that carries the 'Angar' (fire) of Surat." }
     ]
   }
 ];
@@ -242,7 +242,7 @@ const Booking = () => {
   const [personCount, setPersonCount] = useState(100);
   const [orderDetails, setOrderDetails] = useState({ date: "", time: "", phone: "" });
   
-  // Custom Alert State (Modified to support button text and actions)
+  // Custom Alert State
   const [customAlert, setCustomAlert] = useState(null);
   
   // Floating Taskbar State
@@ -253,7 +253,6 @@ const Booking = () => {
   
   const filteredCombos = WEDDING_COMBOS.filter(c => c.type === (isVeg ? "veg" : "nonveg"));
 
-  // Check local storage on mount to see if taskbar should be visible
   useEffect(() => {
     const cart = JSON.parse(localStorage.getItem("ub_wedding_cart")) || [];
     setWeddingCartCount(cart.length);
@@ -301,14 +300,12 @@ const Booking = () => {
       phoneNumber: phone
     };
 
-    // Storing in a separate 'ub_wedding_cart'
     const cart = JSON.parse(localStorage.getItem("ub_wedding_cart")) || [];
     const updatedCart = [...cart, cartItem];
     
     localStorage.setItem("ub_wedding_cart", JSON.stringify(updatedCart));
-    setWeddingCartCount(updatedCart.length); // Update taskbar state
+    setWeddingCartCount(updatedCart.length); 
     
-    // Auto-redirect via success alert
     setCustomAlert({ 
       type: "success", 
       message: "Wedding Package successfully added! Proceeding to the Wedding Cart...",
