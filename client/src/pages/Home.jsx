@@ -165,7 +165,7 @@ const Home = () => {
             <p className="img-caption">02. ELEGANT EVENTS</p>
           </div>
           <div className="parallax-img-wrapper img-left parallax-img-3">
-            <img src="https://images.unsplash.com/photo-1533144473977-96c5e011746d?q=80&w=1974" alt="3" />
+            <img src="https://b.zmtcdn.com/data/pictures/chains/6/19157896/de01504b7e593a59b6facc2d3c2952aa.jpg?fit=around|750:500&crop=750:500;*,*" alt="3" />
             <p className="img-caption">03. HERITAGE TASTE</p>
           </div>
           <div className="parallax-img-wrapper img-right parallax-img-4">
