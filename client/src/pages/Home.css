@@ -16,12 +16,12 @@
 /* --- SECTION 01: HERO --- */
 .hero-section-text {
   width: 100%;
-  height: 100vh;
+  min-height: 100vh; /* Changed from height to min-height for better scaling */
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 0 5%; /* Fixes text touching edges on small screens */
+  padding: 100px 5% 40px 5%; /* Added top padding to clear the navbar safely */
 }
 
 .hero-title {
@@ -35,6 +35,7 @@
 
 .hero-line-wrapper {
   overflow: hidden;
+  padding-top: 15px; /* Prevents overflow:hidden from clipping the top of the font */
 }
 
 .text-gold {
