@@ -201,28 +201,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* SECTION 05: ACTION NAV */}
-      <section className="nav-expand-section">
-        <div className="nav-wrap nav-wrap-left">
-          <Link to="/contact" className="static-btn">CONTACT US</Link>
-          <div className="marquee-wrapper marquee-contact">
-            <div className="marquee-inner">
-              <span>CONTACT US &nbsp;&nbsp; CONTACT US &nbsp;&nbsp; CONTACT US &nbsp;&nbsp; </span>
-              <span>CONTACT US &nbsp;&nbsp; CONTACT US &nbsp;&nbsp; CONTACT US &nbsp;&nbsp; </span>
-            </div>
-          </div>
-        </div>
-        <div className="nav-wrap nav-wrap-right">
-          <Link to="/about" className="static-btn">ABOUT US</Link>
-          <div className="marquee-wrapper marquee-about">
-            <div className="marquee-inner">
-              <span>ABOUT US &nbsp;&nbsp; ABOUT US &nbsp;&nbsp; ABOUT US &nbsp;&nbsp; </span>
-              <span>ABOUT US &nbsp;&nbsp; ABOUT US &nbsp;&nbsp; ABOUT US &nbsp;&nbsp; </span>
-            </div>
-          </div>
-        </div>
-      </section>
-
     </div>
   );
 };
