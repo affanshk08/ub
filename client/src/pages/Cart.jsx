@@ -40,7 +40,7 @@ const Cart = () => {
   // --- UPI LOGIC ---
   const upiId = "affanshk021@oksbi"; 
   const upiName = "Usman Bhai Bhatiyara"; 
-  const upiIntentString = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(upiName)}&am=${grandTotal}&cu=INR`;
+  const upiIntentString = `upi://pay?pa=${"affanshk021-1@oksbi"}&pn=${encodeURIComponent("UB Catering")}&am=${grandTotal}&cu=INR`;
   const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(upiIntentString)}`;
 
   const handleStartCheckout = () => {
